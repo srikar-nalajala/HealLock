@@ -6,6 +6,7 @@ import {
 import { auth } from './firebase';
 import { UserRole, Patient, Staff, EmergencyProfile } from '../types';
 import { INITIAL_PATIENT, INITIAL_STAFF } from './mockData';
+import { biometricService } from './biometricService';
 
 export interface AuthUser {
   uid: string;
@@ -240,42 +241,40 @@ class AuthService {
 
   /**
    * Face Recognition Liveness Login (Direct Face Vector Authentication)
+   * Strictly matches live vector against enrolled registered accounts (d <= 0.45, cos >= 0.88)
    */
   public async loginWithFaceFeatures(faceFeatures: number[]): Promise<AuthUser> {
     const accounts = this.getRegisteredAccounts();
     const accountList = Object.values(accounts);
 
-    // Find any account with matching face features
+    let bestMatch: AuthUser | null = null;
+    let lowestDistance = 999;
+
     for (const acc of accountList) {
-      if (acc.patientData?.registeredBiometrics?.faceFeatures) {
-        let dotProduct = 0;
-        let normA = 0;
-        let normB = 0;
-        const enrolled = acc.patientData.registeredBiometrics.faceFeatures;
-        const minLen = Math.min(faceFeatures.length, enrolled.length);
-        for (let i = 0; i < minLen; i++) {
-          dotProduct += faceFeatures[i] * enrolled[i];
-          normA += faceFeatures[i] * faceFeatures[i];
-          normB += enrolled[i] * enrolled[i];
-        }
-        const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB) || 1);
-        if (similarity >= 0.82) {
-          this.currentUser = acc;
-          this.notify();
-          return acc;
+      if (acc.patientData?.registeredBiometrics?.faceFeatures && acc.patientData.registeredBiometrics.faceFeatures.length > 0) {
+        const result = biometricService.verifyFaceMatch(
+          faceFeatures,
+          acc.patientData.registeredBiometrics.faceFeatures,
+          acc.patientData.registeredBiometrics.faceTemplateRef
+        );
+
+        if (result.matched && result.euclideanDistance < lowestDistance) {
+          lowestDistance = result.euclideanDistance;
+          bestMatch = acc;
         }
       }
     }
 
-    // Default to primary patient if no specific registered account vector matched
-    const user = await this.login({
-      email: INITIAL_PATIENT.email,
-      password: 'FaceBiometricVerified123!',
-      role: 'patient',
-    });
-    this.currentUser = user;
-    this.notify();
-    return user;
+    if (bestMatch) {
+      this.currentUser = bestMatch;
+      this.notify();
+      return bestMatch;
+    }
+
+    // Strictly reject unauthorized faces — do not fall back to default patient!
+    throw new Error(
+      'Face not recognized. No registered account matches this biometric profile. Please sign in with your email or enroll your face first.'
+    );
   }
 
   /**

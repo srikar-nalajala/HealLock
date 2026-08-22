@@ -354,7 +354,7 @@ export const BiometricModal: React.FC<BiometricModalProps> = ({
                     </p>
                     {matchResult && matchResult.euclideanDistance < 5 && (
                       <div className="mt-2 text-[11px] font-mono text-rose-300">
-                        Measured Distance: {matchResult.euclideanDistance} (Max allowed: 0.58)
+                        Measured Distance: {matchResult.euclideanDistance} (Max allowed: 0.45)
                       </div>
                     )}
                     <button
@@ -369,8 +369,8 @@ export const BiometricModal: React.FC<BiometricModalProps> = ({
 
               {/* Action Controls */}
               <div className="flex items-center justify-between gap-3 pt-2">
-                <div className="text-[11px] text-slate-500">
-                  <span className="font-semibold text-slate-700">Strict Metric:</span> 128D Cosine & Euclidean threshold (Cutoff: $\le 0.58$).
+                <div className="text-[11px] text-[#82786D]">
+                  <span className="font-semibold text-[#2B2521]">Strict Metric:</span> L2 Euclidean $\le 0.45$ & Cosine $\ge 0.88$.
                 </div>
 
                 {step === 'capturing' && !modelsLoading && (
