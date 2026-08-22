@@ -7,23 +7,19 @@ import {
   BarChart2, 
   Settings, 
   Lock, 
-  Layers, 
-  HeartHandshake,
-  Sparkles
+  HeartHandshake 
 } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   onSelectTab: (tab: string) => void;
   onOpenExplorer: () => void;
-  onOpenScanner: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   onSelectTab,
   onOpenExplorer,
-  onOpenScanner,
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },

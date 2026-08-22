@@ -463,7 +463,6 @@ export function App() {
               setSelectedTxForModal(null);
               setIsExplorerOpen(true);
             }}
-            onOpenScanner={() => setIsScannerOpen(true)}
           />
         )}
 
