@@ -25,7 +25,7 @@ import {
   Zap
 } from 'lucide-react';
 import { UserRole } from '../../types';
-import { authService, AuthUser, DetailedRegistrationData } from '../../services/authService';
+import { authService, AuthUser, DetailedRegistrationData, REGISTERED_HOSPITALS_CREDENTIALS, RegisteredHospitalCredential } from '../../services/authService';
 import { INITIAL_PATIENT } from '../../services/mockData';
 import confetti from 'canvas-confetti';
 
@@ -44,6 +44,7 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedHospitalPreset, setSelectedHospitalPreset] = useState<string>('HOSP-CITYCARE-84910');
 
   // Patient Detailed Registration Fields
   const [dob, setDob] = useState('1996-05-14');
@@ -57,10 +58,10 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
   const [criticalMeds, setCriticalMeds] = useState('Lisinopril 10mg');
   const [conditions, setConditions] = useState('Hypertension');
 
-  // Doctor / Staff Detailed Registration Fields
-  const [medicalLicense, setMedicalLicense] = useState('MD-84920-CA');
-  const [hospitalName, setHospitalName] = useState('City Care Hospital');
-  const [department, setDepartment] = useState('Cardiology & Critical Care');
+  // Hospital / Doctor Detailed Registration Fields
+  const [medicalLicense, setMedicalLicense] = useState('MD-84910');
+  const [hospitalName, setHospitalName] = useState('City Care Multi-Specialty Hospital');
+  const [department, setDepartment] = useState('Cardiology & Emergency EHR');
 
   // Pharmacist Detailed Registration Fields
   const [pharmacyLicense, setPharmacyLicense] = useState('RPH-94102');
@@ -82,10 +83,10 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
     },
     {
       role: 'doctor' as UserRole,
-      title: 'Doctor & ER',
-      desc: 'Clinical EHR, AI Rx engine & unlock',
-      icon: Stethoscope,
-      accentColor: 'border-indigo-500 bg-indigo-50/70 text-indigo-900',
+      title: 'Hospital & ER',
+      desc: 'Hospital EHR node, attending doctor & emergency bypass',
+      icon: Building2,
+      accentColor: 'border-[#C85A3B] bg-[#FFF9F2] text-[#2B2521]',
     },
     {
       role: 'pharmacist' as UserRole,
@@ -103,6 +104,16 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
     },
   ];
 
+  const handleSelectHospitalPreset = (hosp: RegisteredHospitalCredential) => {
+    setSelectedHospitalPreset(hosp.hospitalId);
+    setEmail(hosp.hospitalId);
+    setPassword('DemoRolePassword123!');
+    setHospitalName(hosp.name);
+    setDepartment(hosp.department);
+    setMedicalLicense(hosp.badgeNumber);
+    setFullName(hosp.attendingDoctor);
+  };
+
   const handleQuickDemoLogin = async (role: UserRole) => {
     setIsLoading(true);
     setAuthError(null);
@@ -110,7 +121,7 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
     try {
       let demoEmail = '';
       if (role === 'patient') demoEmail = INITIAL_PATIENT.email;
-      else if (role === 'doctor') demoEmail = 'dr.thorne@metrohealth.org';
+      else if (role === 'doctor') demoEmail = 'HOSP-CITYCARE-84910';
       else if (role === 'pharmacist') demoEmail = 'elena.rostova@apothecary.net';
       else demoEmail = 'marcus.vance@saintjude.org';
 
@@ -341,6 +352,48 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
               </div>
             </div>
 
+            {/* Hospital Facility Preset Quick Selector */}
+            {selectedRole === 'doctor' && authMode === 'login' && (
+              <div className="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8DEC8] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-[#2B2521] text-xs flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-[#C85A3B]" />
+                    <span>Registered Hospital Facilities & Login IDs</span>
+                  </div>
+                  <span className="text-[10px] text-[#82786D] font-mono">1-Click Quick Fill</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {REGISTERED_HOSPITALS_CREDENTIALS.map(hosp => {
+                    const isSelected = selectedHospitalPreset === hosp.hospitalId || email.toLowerCase() === hosp.hospitalId.toLowerCase();
+                    return (
+                      <button
+                        key={hosp.hospitalId}
+                        type="button"
+                        onClick={() => handleSelectHospitalPreset(hosp)}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-1.5 ${
+                          isSelected
+                            ? 'bg-white border-[#C85A3B] shadow-xs ring-1 ring-[#C85A3B]'
+                            : 'bg-white/80 border-[#E8E1D5] hover:border-[#C85A3B]'
+                        }`}
+                      >
+                        <div>
+                          <div className="font-bold text-[#2B2521] text-xs line-clamp-1">{hosp.name}</div>
+                          <div className="text-[10px] font-mono font-bold text-[#C85A3B] mt-0.5">
+                            ID: {hosp.hospitalId}
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-[#63594F] flex items-center justify-between border-t border-[#E8E1D5]/60 pt-1">
+                          <span>{hosp.attendingDoctor}</span>
+                          <span className="font-mono text-[#82786D]">{hosp.code}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Real-time Clean Form */}
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               {/* Common Account Fields */}
@@ -360,13 +413,19 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                 )}
 
                 <div className="space-y-1.5">
-                  <label className="font-bold text-[#2B2521]">Email Address *</label>
+                  <label className="font-bold text-[#2B2521]">
+                    {selectedRole === 'doctor' ? 'Hospital ID or Facility Email *' : 'Email Address *'}
+                  </label>
                   <input
-                    type="email"
+                    type="text"
                     required
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="e.g. yourname@example.com"
+                    placeholder={
+                      selectedRole === 'doctor'
+                        ? 'e.g. HOSP-CITYCARE-84910 or doctor@citycare.com'
+                        : 'e.g. yourname@example.com'
+                    }
                     className="w-full px-4 py-3 rounded-2xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold text-[#2B2521] placeholder-[#82786D] focus:ring-2 focus:ring-[#C85A3B] focus:outline-none"
                   />
                 </div>
@@ -525,35 +584,47 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                 </div>
               )}
 
-              {/* Doctor Registration */}
+              {/* Hospital Organization Registration */}
               {authMode === 'register' && selectedRole === 'doctor' && (
                 <div className="space-y-3 pt-3 border-t border-[#E8E1D5]">
                   <div className="font-bold text-[#2B2521] text-xs flex items-center gap-1.5">
-                    <Stethoscope className="w-4 h-4 text-[#C85A3B]" />
-                    <span>Physician Credentials</span>
+                    <Building2 className="w-4 h-4 text-[#C85A3B]" />
+                    <span>Hospital Facility & Clinical EHR Node Registration</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="font-bold text-[#63594F]">Medical License Number *</label>
-                      <input
-                        type="text"
-                        required
-                        value={medicalLicense}
-                        onChange={e => setMedicalLicense(e.target.value)}
-                        placeholder="e.g. MD-84920-CA"
-                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-mono font-semibold"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="font-bold text-[#63594F]">Hospital / Facility Name *</label>
+                    <div className="space-y-1 sm:col-span-2">
+                      <label className="font-bold text-[#63594F]">Hospital / Healthcare Facility Name *</label>
                       <input
                         type="text"
                         required
                         value={hospitalName}
                         onChange={e => setHospitalName(e.target.value)}
-                        placeholder="e.g. City Care Hospital"
+                        placeholder="e.g. City Care Multi-Specialty Hospital"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="font-bold text-[#63594F]">Medical License / Registry ID *</label>
+                      <input
+                        type="text"
+                        required
+                        value={medicalLicense}
+                        onChange={e => setMedicalLicense(e.target.value)}
+                        placeholder="e.g. MD-84910 or HOSP-REG-01"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-mono font-semibold"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="font-bold text-[#63594F]">Clinical Department *</label>
+                      <input
+                        type="text"
+                        required
+                        value={department}
+                        onChange={e => setDepartment(e.target.value)}
+                        placeholder="e.g. Cardiology & Emergency EHR"
                         className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold"
                       />
                     </div>
@@ -643,7 +714,13 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                   <span>Authenticating...</span>
                 ) : (
                   <>
-                    <span>{authMode === 'login' ? `Sign In as ${selectedRole.toUpperCase()}` : `Create & Register Account`}</span>
+                    <span>
+                      {authMode === 'login'
+                        ? selectedRole === 'doctor'
+                          ? 'Sign In as HOSPITAL & CLINICAL EHR'
+                          : `Sign In as ${selectedRole.toUpperCase()}`
+                        : 'Create & Register Account'}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

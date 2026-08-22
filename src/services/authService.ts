@@ -38,18 +38,72 @@ export interface DetailedRegistrationData {
   criticalMeds?: string;
   conditions?: string;
 
-  // Doctor Specific Detailed Fields
+  // Hospital / Doctor Specific Fields
   medicalLicense?: string;
   hospitalName?: string;
   department?: string;
 
-  // Pharmacist Specific Detailed Fields
+  // Pharmacist Specific Fields
   pharmacyLicense?: string;
   pharmacyName?: string;
 
-  // Admin Specific Detailed Fields
+  // Admin Specific Fields
   adminId?: string;
 }
+
+export interface RegisteredHospitalCredential {
+  hospitalId: string;
+  name: string;
+  code: string;
+  email: string;
+  attendingDoctor: string;
+  badgeNumber: string;
+  department: string;
+  avatarUrl: string;
+}
+
+export const REGISTERED_HOSPITALS_CREDENTIALS: RegisteredHospitalCredential[] = [
+  {
+    hospitalId: 'HOSP-CITYCARE-84910',
+    name: 'City Care Multi-Specialty Hospital',
+    code: 'CCH-METRO',
+    email: 'doctor@citycare.com',
+    attendingDoctor: 'Dr. Rajesh Sharma, MD',
+    badgeNumber: 'MD-84910',
+    department: 'Internal Medicine & Cardiology',
+    avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80',
+  },
+  {
+    hospitalId: 'HOSP-APEX-10492',
+    name: 'Apex Diagnostics & Research Hospital',
+    code: 'APEX-DIAG',
+    email: 'clinic@apexdiag.com',
+    attendingDoctor: 'Dr. Priya Patel, MD',
+    badgeNumber: 'MD-10492',
+    department: 'Pathology & Internal Medicine',
+    avatarUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80',
+  },
+  {
+    hospitalId: 'HOSP-METRO-55201',
+    name: 'Metro Health Emergency Trauma Center',
+    code: 'METRO-ER',
+    email: 'er@metrohealth.org',
+    attendingDoctor: 'Dr. Elena Vance, MD',
+    badgeNumber: 'ER-49102',
+    department: 'Level 1 Trauma & Emergency Resuscitation',
+    avatarUrl: 'https://images.unsplash.com/photo-1594824813628-9844445c7198?w=150&auto=format&fit=crop&q=80',
+  },
+  {
+    hospitalId: 'HOSP-STJUDE-99341',
+    name: 'St. Jude Community Hospital & Research',
+    code: 'STJUDE-CLINIC',
+    email: 'hospital@stjude.org',
+    attendingDoctor: 'Dr. Marcus Croft, MD',
+    badgeNumber: 'MD-99341',
+    department: 'Family Medicine & Outpatient Care',
+    avatarUrl: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&auto=format&fit=crop&q=80',
+  },
+];
 
 export interface LoginCredentials {
   email: string;
@@ -161,11 +215,34 @@ class AuthService {
           isFirebaseAuthenticated: true,
         };
       } else {
-        const staffMember = INITIAL_STAFF.find(s => s.role === role) || INITIAL_STAFF[0];
+        // Check if matching a specific hospital preset
+        const matchedHospital = REGISTERED_HOSPITALS_CREDENTIALS.find(
+          h => h.hospitalId.toLowerCase() === cleanEmail ||
+               h.email.toLowerCase() === cleanEmail ||
+               h.code.toLowerCase() === cleanEmail ||
+               cleanEmail.includes(h.code.toLowerCase())
+        );
+
+        let staffMember = INITIAL_STAFF.find(s => s.role === role) || INITIAL_STAFF[0];
+        let staffName = nameFromEmail;
+
+        if (matchedHospital) {
+          staffName = matchedHospital.attendingDoctor;
+          staffMember = {
+            ...staffMember,
+            hospitalId: matchedHospital.hospitalId,
+            hospitalName: matchedHospital.name,
+            name: matchedHospital.attendingDoctor,
+            department: matchedHospital.department,
+            badgeNumber: matchedHospital.badgeNumber,
+            avatarUrl: matchedHospital.avatarUrl,
+          };
+        }
+
         const staffData: Staff = {
           ...staffMember,
           id: fbUid,
-          name: nameFromEmail,
+          name: staffName,
           role,
         };
 
@@ -174,7 +251,7 @@ class AuthService {
           email: cleanEmail,
           displayName: staffData.name,
           role,
-          photoURL: staffMember.avatarUrl,
+          photoURL: staffData.avatarUrl || staffMember.avatarUrl,
           token: 'fb_jwt_' + Math.random().toString(36).substring(2),
           staffData,
           isFirebaseAuthenticated: true,

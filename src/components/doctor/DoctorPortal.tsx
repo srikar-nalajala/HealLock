@@ -535,21 +535,21 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
-      {/* Doctor Header Banner with Mode Navigation */}
+      {/* Hospital & Clinical EHR Header Banner */}
       <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-[#241F1C] via-[#332A24] to-[#201B18] text-[#FAF7F2] shadow-xl border border-[#3E352F] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="p-3 bg-white/10 rounded-2xl border border-white/15 shrink-0">
-            <Stethoscope className="w-7 h-7 sm:w-8 sm:h-8 text-[#FAF7F2]" />
+            <Building2 className="w-7 h-7 sm:w-8 sm:h-8 text-[#F5C7B8]" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-black text-[#FAF7F2]">{staff.name}</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs bg-[#C85A3B]/30 text-[#F5C7B8] font-bold border border-[#C85A3B]/40">
-                {staff.department}
+              <h2 className="text-lg sm:text-xl font-black text-[#FAF7F2]">{staff.hospitalName}</h2>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs bg-[#C85A3B]/30 text-[#F5C7B8] font-bold border border-[#C85A3B]/40 font-mono">
+                {staff.hospitalId || 'HOSP-CITYCARE-84910'}
               </span>
             </div>
             <p className="text-xs text-[#D8CEBE] mt-0.5">
-              {staff.hospitalName} · License: {staff.badgeNumber}
+              Attending Physician: {staff.name} · {staff.department} · License: {staff.badgeNumber}
             </p>
           </div>
         </div>

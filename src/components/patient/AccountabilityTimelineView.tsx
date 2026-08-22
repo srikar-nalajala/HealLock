@@ -106,8 +106,13 @@ export const AccountabilityTimelineView: React.FC<AccountabilityTimelineViewProp
               {/* Event Box */}
               <div className="p-5 rounded-2xl bg-[#FAF7F2] hover:bg-[#F3EFE6] border border-[#E8E1D5] transition-all space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-bold text-[#2B2521] text-sm">{event.hospitalName}</h3>
+                    {event.hospitalId && (
+                      <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-white text-[#2B2521] border border-[#E8DEC8] rounded-full">
+                        {event.hospitalId}
+                      </span>
+                    )}
                     <span
                       className={`px-2.5 py-0.5 text-[10px] font-extrabold uppercase rounded-full ${
                         event.accessType === 'emergency'
@@ -126,13 +131,17 @@ export const AccountabilityTimelineView: React.FC<AccountabilityTimelineViewProp
                   <span className="text-xs text-[#82786D] font-mono">{event.timestamp}</span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                   <div>
-                    <span className="text-[#82786D]">Action:</span>
+                    <span className="text-[#82786D]">Attending Clinician:</span>
+                    <p className="font-bold text-[#2B2521] mt-0.5">{event.staffName} ({event.staffRole})</p>
+                  </div>
+                  <div>
+                    <span className="text-[#82786D]">Action Logged:</span>
                     <p className="font-bold text-[#2B2521] mt-0.5">{event.action}</p>
                   </div>
                   <div>
-                    <span className="text-[#82786D]">Clinical Reason:</span>
+                    <span className="text-[#82786D]">Clinical Justification:</span>
                     <p className="font-medium text-[#4F4740] mt-0.5">{event.reason}</p>
                   </div>
                 </div>
