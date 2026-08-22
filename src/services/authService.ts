@@ -181,12 +181,24 @@ class AuthService {
     const accounts = this.getRegisteredAccounts();
     const existingAccount = accounts[cleanEmail];
 
+    // Check if matching a specific hospital preset
+    const matchedHospital = REGISTERED_HOSPITALS_CREDENTIALS.find(
+      h => h.hospitalId.toLowerCase() === cleanEmail ||
+           h.email.toLowerCase() === cleanEmail ||
+           h.code.toLowerCase() === cleanEmail ||
+           cleanEmail.includes(h.code.toLowerCase()) ||
+           cleanEmail.startsWith('hosp-')
+    );
+
+    // If hospital ID is supplied, enforce doctor role for Hospital EHR
+    const effectiveRole: UserRole = matchedHospital || cleanEmail.startsWith('hosp-') ? 'doctor' : role;
+
     let user: AuthUser;
 
     if (existingAccount) {
       user = {
         ...existingAccount,
-        role,
+        role: effectiveRole,
         isFirebaseAuthenticated: true,
       };
     } else {
@@ -194,7 +206,7 @@ class AuthService {
       const nameFromEmail = cleanEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
       const fbUid = 'usr_' + Math.random().toString(36).substring(2, 9);
 
-      if (role === 'patient') {
+      if (effectiveRole === 'patient') {
         const patientData: Patient = {
           ...INITIAL_PATIENT,
           id: fbUid,
@@ -215,15 +227,7 @@ class AuthService {
           isFirebaseAuthenticated: true,
         };
       } else {
-        // Check if matching a specific hospital preset
-        const matchedHospital = REGISTERED_HOSPITALS_CREDENTIALS.find(
-          h => h.hospitalId.toLowerCase() === cleanEmail ||
-               h.email.toLowerCase() === cleanEmail ||
-               h.code.toLowerCase() === cleanEmail ||
-               cleanEmail.includes(h.code.toLowerCase())
-        );
-
-        let staffMember = INITIAL_STAFF.find(s => s.role === role) || INITIAL_STAFF[0];
+        let staffMember = INITIAL_STAFF.find(s => s.role === effectiveRole) || INITIAL_STAFF[0];
         let staffName = nameFromEmail;
 
         if (matchedHospital) {

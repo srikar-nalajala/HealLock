@@ -105,6 +105,7 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
   ];
 
   const handleSelectHospitalPreset = (hosp: RegisteredHospitalCredential) => {
+    setSelectedRole('doctor');
     setSelectedHospitalPreset(hosp.hospitalId);
     setEmail(hosp.hospitalId);
     setPassword('DemoRolePassword123!');

@@ -69,35 +69,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
             );
           })}
-
-          {/* Quick Trigger Buttons */}
-          <div className="pt-6 space-y-2">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#82786D] px-3">
-              Simulators & Scanners
-            </div>
-
-            <button
-              type="button"
-              onClick={onOpenScanner}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-[#5B4886] bg-[#F2EDFA] hover:bg-[#EAE2F7] rounded-xl border border-[#DCD3EB] transition-colors cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#5B4886]" />
-              <span>Document AI Scanner</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onOpenExplorer}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-[#2B2521] bg-white hover:bg-[#F5EFE6] rounded-xl border border-[#E8E1D5] shadow-xs transition-colors cursor-pointer"
-            >
-              <Layers className="w-3.5 h-3.5 text-[#C85A3B]" />
-              <span>On-Chain Block Explorer</span>
-            </button>
-          </div>
         </div>
 
-        {/* Trust & Crypto Status Footer */}
-        <div className="p-3.5 rounded-xl bg-white border border-[#E8E1D5] shadow-xs space-y-2 text-[11px]">
+        {/* Sovereign Trust & Cryptographic Ledger Footer */}
+        <button
+          type="button"
+          onClick={onOpenExplorer}
+          className="p-3.5 rounded-2xl bg-white hover:bg-[#FDF8F5] border border-[#E8E1D5] hover:border-[#C85A3B] shadow-xs space-y-2 text-[11px] text-left transition-all cursor-pointer group"
+          title="Click to inspect cryptographic on-chain ledger"
+        >
           <div className="flex items-center justify-between text-[#63594F]">
             <span className="flex items-center gap-1.5 font-medium">
               <Lock className="w-3.5 h-3.5 text-[#2D6346]" />
@@ -110,9 +90,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <HeartHandshake className="w-3.5 h-3.5 text-[#C85A3B]" />
               <span>Consensus</span>
             </span>
-            <span className="font-mono text-[#2B2521] font-bold">PoA Ledger</span>
+            <span className="font-mono text-[#2B2521] font-bold group-hover:text-[#C85A3B] transition-colors">
+              PoA Ledger ↗
+            </span>
           </div>
-        </div>
+        </button>
       </aside>
 
       {/* Mobile Bottom Navigation Bar (fixed for mobile screens) */}
