@@ -96,7 +96,7 @@ class AuthService {
     this.listeners.forEach(l => l(this.currentUser));
   }
 
-  private getRegisteredAccounts(): Record<string, AuthUser & { passwordHash?: string }> {
+  public getRegisteredAccounts(): Record<string, AuthUser & { passwordHash?: string }> {
     try {
       const saved = localStorage.getItem('heallock_registered_accounts');
       return saved ? JSON.parse(saved) : {};

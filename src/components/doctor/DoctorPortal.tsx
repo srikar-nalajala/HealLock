@@ -29,7 +29,12 @@ import {
   Building2,
   Camera,
   CameraOff,
-  Check
+  Check,
+  Users,
+  User,
+  Eye,
+  X,
+  ChevronRight
 } from 'lucide-react';
 import { Patient, Staff, MedicalRecord, Prescription, AiSafetyFlag, ConsentGrant, AccessEvent, AccessRequest, ConsentScope } from '../../types';
 import { AiSafetyEngine } from '../../services/aiSafetyEngine';
@@ -37,6 +42,8 @@ import { blockchainService } from '../../services/blockchainService';
 import { firebasePatientService } from '../../services/firebasePatientService';
 import { biometricService } from '../../services/biometricService';
 import { supabaseService } from '../../services/supabaseService';
+import { authService } from '../../services/authService';
+import { INITIAL_PATIENT } from '../../services/mockData';
 import confetti from 'canvas-confetti';
 
 interface DoctorPortalProps {
@@ -69,6 +76,12 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
   const [searchedPatient, setSearchedPatient] = useState<Patient>(initialPatient);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+
+  // All Patients Directory State
+  const [allPatients, setAllPatients] = useState<Patient[]>([initialPatient]);
+  const [isPatientDirectoryOpen, setIsPatientDirectoryOpen] = useState(false);
+  const [directorySearchQuery, setDirectorySearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Real-time fetched records & consents for searched patient
   const [patientRecords, setPatientRecords] = useState<MedicalRecord[]>(initialRecords);
@@ -107,6 +120,50 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
+
+  // Fetch all registered patients from Supabase, local storage, and mock database
+  const fetchAllPatients = async () => {
+    try {
+      const list = await supabaseService.getAllPatients();
+      const registeredAccounts = authService.getRegisteredAccounts();
+      const combinedMap = new Map<string, Patient>();
+      
+      // Add from Supabase
+      for (const p of list) {
+        if (p?.id) combinedMap.set(p.id, p);
+      }
+      // Add from registered local accounts
+      for (const acc of Object.values(registeredAccounts)) {
+        if (acc.patientData?.id) {
+          combinedMap.set(acc.patientData.id, acc.patientData);
+        }
+      }
+      // Always include baseline patient Olivia
+      if (INITIAL_PATIENT?.id) {
+        combinedMap.set(INITIAL_PATIENT.id, INITIAL_PATIENT);
+      }
+      if (initialPatient?.id) {
+        combinedMap.set(initialPatient.id, initialPatient);
+      }
+
+      setAllPatients(Array.from(combinedMap.values()));
+    } catch (err) {
+      console.warn('[DoctorPortal] fetchAllPatients error:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllPatients();
+  }, []);
+
+  // Quick switch patient helper
+  const handleSelectPatient = (p: Patient) => {
+    setSearchedPatient(p);
+    setSearchQuery(p.healthId);
+    setSearchError(null);
+    setIsPatientDirectoryOpen(false);
+    setIsSearchFocused(false);
+  };
 
   // Synchronize initial data
   useEffect(() => {
@@ -532,35 +589,122 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         </div>
       </div>
 
-      {/* Patient Search Bar */}
-      <div className="p-4 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs">
-        <form onSubmit={handleSearchPatient} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-[#82786D] absolute left-3 top-3 sm:top-2.5" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search Patient by Health ID (e.g. HL-1894-4321) or Email..."
-              className="w-full pl-9 pr-3 py-2 bg-[#FAF7F2] rounded-xl text-xs border border-[#E8E1D5] font-semibold text-[#2B2521] placeholder-[#82786D] focus:outline-none focus:ring-2 focus:ring-[#C85A3B]"
-            />
-          </div>
+      {/* Patient Search & All-Patients Directory Bar */}
+      <div className="p-5 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm space-y-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <form onSubmit={handleSearchPatient} className="relative flex-1 flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-[#82786D] absolute left-3.5 top-3" />
+              <input
+                type="text"
+                value={searchQuery}
+                onFocus={() => setIsSearchFocused(true)}
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchFocused(true);
+                }}
+                placeholder="Search patient by Name, Health ID (e.g. HL-1894-4321), or Email..."
+                className="w-full pl-9 pr-3 py-2.5 bg-[#FAF7F2] rounded-2xl text-xs border border-[#E8E1D5] font-semibold text-[#2B2521] placeholder-[#82786D] focus:outline-none focus:ring-2 focus:ring-[#C85A3B]"
+              />
+
+              {/* Auto-suggest dropdown */}
+              {isSearchFocused && searchQuery.trim().length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl border border-[#E8E1D5] shadow-xl z-30 max-h-60 overflow-y-auto p-2 space-y-1">
+                  <div className="px-2 py-1 text-[10px] font-bold text-[#82786D] uppercase">
+                    Matching Patients ({allPatients.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.healthId.toLowerCase().includes(searchQuery.toLowerCase()) || p.email.toLowerCase().includes(searchQuery.toLowerCase())).length})
+                  </div>
+                  {allPatients
+                    .filter(p => 
+                      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      p.healthId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      p.email.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    .map(p => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => handleSelectPatient(p)}
+                        className="w-full p-2 hover:bg-[#FAF7F2] rounded-xl flex items-center justify-between text-left transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            src={p.registeredBiometrics?.facePhotoUrl || p.avatarUrl}
+                            alt={p.name}
+                            className="w-7 h-7 rounded-full object-cover border border-[#E8E1D5]"
+                          />
+                          <div>
+                            <div className="font-bold text-[#2B2521] text-xs">{p.name}</div>
+                            <div className="text-[10px] font-mono text-[#82786D]">{p.healthId} · {p.email}</div>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-[#C85A3B] font-bold">Select →</span>
+                      </button>
+                    ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSearching}
+              className="px-5 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-[#FAF7F2] rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
+            >
+              {isSearching ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#F5C7B8]" />
+              ) : (
+                <Search className="w-3.5 h-3.5 text-[#F5C7B8]" />
+              )}
+              <span>Lookup EHR</span>
+            </button>
+          </form>
+
+          {/* All Patients Directory Open Button */}
           <button
-            type="submit"
-            disabled={isSearching}
-            className="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-[#2B2521] hover:bg-[#3D352E] text-[#FAF7F2] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+            type="button"
+            onClick={() => setIsPatientDirectoryOpen(true)}
+            className="px-4 py-2.5 bg-[#FAF7F2] hover:bg-[#EAE2D5] text-[#2B2521] border border-[#E8DEC8] rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer shrink-0"
           >
-            {isSearching ? (
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <Search className="w-3.5 h-3.5" />
-            )}
-            <span>Lookup Patient EHR</span>
+            <Users className="w-4 h-4 text-[#C85A3B]" />
+            <span>All Patients Directory ({allPatients.length})</span>
           </button>
-        </form>
+        </div>
+
+        {/* Quick Patient Roster Switcher Chips */}
+        <div className="pt-2 border-t border-[#E8E1D5] flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+          <span className="text-[11px] font-bold text-[#82786D] uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+            <Users className="w-3.5 h-3.5 text-[#82786D]" />
+            Patients:
+          </span>
+          {allPatients.map(p => {
+            const isSelected = p.id === searchedPatient.id;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => handleSelectPatient(p)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0 transition-all border cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#2B2521] text-white border-[#2B2521] shadow-xs font-bold'
+                    : 'bg-[#FAF7F2] text-[#63594F] border-[#E8DEC8] hover:border-[#C85A3B] hover:text-[#2B2521]'
+                }`}
+              >
+                <img
+                  src={p.registeredBiometrics?.facePhotoUrl || p.avatarUrl}
+                  alt={p.name}
+                  className="w-5 h-5 rounded-full object-cover border border-white/40"
+                />
+                <span>{p.name}</span>
+                <span className={`text-[10px] font-mono ${isSelected ? 'text-[#F5C7B8]' : 'text-[#82786D]'}`}>
+                  ({p.healthId})
+                </span>
+                {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#F5C7B8]" />}
+              </button>
+            );
+          })}
+        </div>
 
         {searchError && (
-          <div className="mt-2 text-rose-600 text-xs font-semibold">
+          <div className="mt-1 text-[#BA3B3B] text-xs font-semibold bg-[#FDF2F0] p-2.5 rounded-xl border border-[#F5C7C1]">
             {searchError}
           </div>
         )}
@@ -572,50 +716,50 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
           {/* Left Column: Patient Profile & Access Status */}
           <div className="lg:col-span-5 space-y-4">
             {/* Patient Card */}
-            <div className="heal-card p-5 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-3">
+            <div className="heal-card p-6 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E8E1D5]">
+                <div className="flex items-center gap-3.5">
                   <img
                     src={liveScannedPhoto || searchedPatient.registeredBiometrics?.facePhotoUrl || searchedPatient.avatarUrl}
                     alt={searchedPatient.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-indigo-200 shadow-xs"
+                    className="w-13 h-13 rounded-2xl object-cover border-2 border-[#E8DEC8] shadow-2xs"
                   />
                   <div>
-                    <h3 className="font-bold text-slate-900">{searchedPatient.name}</h3>
-                    <p className="text-xs text-slate-500 font-mono">ID: {searchedPatient.healthId}</p>
+                    <h3 className="font-bold text-[#2B2521] text-base">{searchedPatient.name}</h3>
+                    <p className="text-xs text-[#82786D] font-mono">ID: {searchedPatient.healthId}</p>
+                    <p className="text-[11px] text-[#63594F] mt-0.5">
+                      {searchedPatient.gender} · Born {searchedPatient.dob}
+                    </p>
                   </div>
                 </div>
 
                 <div className="text-right">
                   {hasActiveConsent ? (
-                    <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    <span className="px-3 py-1 text-xs font-bold rounded-full bg-[#EDF5F0] text-[#2D6346] border border-[#C4DFC5]">
                       Consent Active ✓
                     </span>
                   ) : pendingRequest ? (
-                    <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-amber-100 text-amber-900 border border-amber-300 animate-pulse">
+                    <span className="px-3 py-1 text-xs font-bold rounded-full bg-[#FFF9F2] text-[#C85A3B] border border-[#E8DEC8] animate-pulse">
                       Request Pending ⏳
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-rose-100 text-rose-800 border border-rose-300">
+                    <span className="px-3 py-1 text-xs font-bold rounded-full bg-[#FDF2F0] text-[#BA3B3B] border border-[#F5C7C1]">
                       No Active Consent
                     </span>
                   )}
-                  <p className="text-[10px] text-slate-400 mt-0.5">
-                    DOB: {searchedPatient.dob} ({searchedPatient.gender})
-                  </p>
                 </div>
               </div>
 
               {/* If Has Active Consent: Show Scopes & Pre-check baseline */}
               {hasActiveConsent ? (
                 <>
-                  <div className="space-y-1.5 text-xs">
-                    <div className="text-slate-500 font-semibold">Authorized Consent Scope:</div>
+                  <div className="space-y-2 text-xs">
+                    <div className="text-[#63594F] font-semibold">Authorized Consent Scope:</div>
                     <div className="flex flex-wrap gap-1.5">
                       {hospitalConsent?.scope.map(s => (
                         <span
                           key={s}
-                          className="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-medium"
+                          className="px-2.5 py-1 bg-[#FAF7F2] text-[#2B2521] border border-[#E8DEC8] rounded-xl font-medium"
                         >
                           ✓ {s}
                         </span>
@@ -623,51 +767,54 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2 text-xs">
-                    <div className="font-bold text-amber-900 flex items-center gap-1.5">
-                      <AlertTriangle className="w-4 h-4 text-amber-600" />
+                  <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DEC8] space-y-2 text-xs">
+                    <div className="font-bold text-[#2B2521] flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-[#C85A3B]" />
                       <span>Clinical Pre-Check Baseline</span>
                     </div>
-                    <div className="text-amber-800">
-                      <strong>Allergies:</strong> {searchedPatient.emergencyProfile.allergies.join(', ')}
+                    <div className="text-[#63594F]">
+                      <strong className="text-[#2B2521]">Allergies:</strong> {searchedPatient.emergencyProfile.allergies.join(', ') || 'None Documented'}
                     </div>
-                    <div className="text-amber-800">
-                      <strong>Current Regimen:</strong> {searchedPatient.emergencyProfile.criticalMeds.join(', ')}
+                    <div className="text-[#63594F]">
+                      <strong className="text-[#2B2521]">Current Regimen:</strong> {searchedPatient.emergencyProfile.criticalMeds.join(', ') || 'None Active'}
+                    </div>
+                    <div className="text-[#63594F]">
+                      <strong className="text-[#2B2521]">Blood Group:</strong> {searchedPatient.emergencyProfile.bloodGroup || 'O+'}
                     </div>
                   </div>
                 </>
               ) : (
                 /* NO ACTIVE CONSENT: Request Access Workflow */
                 <div className="space-y-4 pt-1">
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-3">
-                    <div className="font-bold text-slate-800 flex items-center gap-1.5">
-                      <KeyRound className="w-4 h-4 text-blue-600" />
+                  <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E8DEC8] text-xs space-y-3">
+                    <div className="font-bold text-[#2B2521] flex items-center gap-2">
+                      <KeyRound className="w-4 h-4 text-[#C85A3B]" />
                       <span>Request Real-Time Patient Consent</span>
                     </div>
-                    <p className="text-slate-600">
+                    <p className="text-[#63594F] leading-relaxed">
                       In compliance with Minimum Necessary Access and Patient Sovereignty, submit an access request to {searchedPatient.name}. The patient will receive a real-time prompt to approve your requested clinical scope.
                     </p>
 
                     {pendingRequest ? (
-                      <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 font-semibold flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-amber-600 animate-spin" />
+                      <div className="p-3.5 bg-[#FFF9F2] rounded-xl border border-[#E8DEC8] text-[#7A402A] font-semibold flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#C85A3B] animate-spin" />
                         <span>Access request sent. Awaiting patient approval in their portal...</span>
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        <div className="space-y-1">
-                          <label className="font-bold text-slate-700">Clinical Justification / Reason *</label>
+                        <div className="space-y-1.5">
+                          <label className="font-bold text-[#2B2521]">Clinical Justification / Reason *</label>
                           <textarea
                             rows={2}
                             value={requestReason}
                             onChange={e => setRequestReason(e.target.value)}
                             placeholder="Reason for accessing records..."
-                            className="w-full p-2 bg-white rounded-lg border border-slate-300"
+                            className="w-full p-2.5 bg-white rounded-xl border border-[#E8E1D5] focus:outline-none focus:ring-2 focus:ring-[#C85A3B]"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="font-bold text-slate-700">Requested Categories</label>
+                          <label className="font-bold text-[#2B2521]">Requested Categories</label>
                           <div className="flex flex-wrap gap-1.5">
                             {(['Lab Reports', 'Rx History', 'Diagnostic Scans', 'Surgical Notes'] as ConsentScope[]).map(sc => {
                               const isChecked = requestedScopes.includes(sc);
@@ -678,8 +825,8 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                                   onClick={() => {
                                     setRequestedScopes(isChecked ? requestedScopes.filter(s => s !== sc) : [...requestedScopes, sc]);
                                   }}
-                                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold cursor-pointer ${
-                                    isChecked ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-300'
+                                  className={`px-2.5 py-1 rounded-xl border text-[11px] font-semibold cursor-pointer transition-all ${
+                                    isChecked ? 'bg-[#2B2521] text-white border-[#2B2521]' : 'bg-white text-[#63594F] border-[#E8E1D5] hover:border-[#C85A3B]'
                                   }`}
                                 >
                                   {sc}
@@ -693,9 +840,9 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                           type="button"
                           disabled={isSendingRequest || !requestReason || requestedScopes.length === 0}
                           onClick={handleSendAccessRequest}
-                          className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-98 cursor-pointer"
+                          className="w-full py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-98 cursor-pointer"
                         >
-                          <SendHorizontal className="w-3.5 h-3.5" />
+                          <SendHorizontal className="w-3.5 h-3.5 text-[#F5C7B8]" />
                           <span>{isSendingRequest ? 'Sending Request...' : 'Send Access Request to Patient'}</span>
                         </button>
                       </div>
@@ -705,15 +852,15 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
               )}
 
               {/* Fast Emergency Bypass Callout */}
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs flex items-center justify-between text-rose-900">
+              <div className="p-3.5 rounded-2xl bg-[#FDF2F0] border border-[#F5C7C1] text-xs flex items-center justify-between text-[#BA3B3B]">
                 <div className="flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4 text-rose-600" />
+                  <ShieldAlert className="w-4 h-4 text-[#BA3B3B]" />
                   <span>Patient Incapacitated / In Crisis?</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveDoctorTab('emergency_unlock')}
-                  className="font-bold text-rose-700 hover:underline cursor-pointer"
+                  className="font-bold text-[#BA3B3B] hover:underline cursor-pointer"
                 >
                   Launch Emergency Unlock →
                 </button>
@@ -722,44 +869,45 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
 
             {/* Accessible Medical Records (If Consent Granted) */}
             {hasActiveConsent && (
-              <div className="heal-card p-5 space-y-3">
+              <div className="heal-card p-6 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-900 text-sm">Authorized Medical Records</h4>
-                  <span className="text-xs text-slate-400 font-mono">{patientRecords.length} Available</span>
+                  <h4 className="font-bold text-[#2B2521] text-sm">Authorized Medical Records</h4>
+                  <span className="text-xs text-[#82786D] font-mono">{patientRecords.length} Available</span>
                 </div>
 
                 <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
                   {patientRecords.map(record => (
                     <div
                       key={record.id}
-                      className="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-blue-300 transition-colors text-xs space-y-1.5"
+                      className="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8E1D5] hover:border-[#C85A3B] transition-colors text-xs space-y-1.5"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800">{record.title}</span>
-                        <span className="text-[10px] text-slate-500">{record.date}</span>
+                        <span className="font-bold text-[#2B2521]">{record.title}</span>
+                        <span className="text-[10px] text-[#82786D]">{record.date}</span>
                       </div>
-                      <p className="text-slate-600 line-clamp-2">{record.aiExtractedFields.summary}</p>
+                      <p className="text-[#63594F] line-clamp-2">{record.aiExtractedFields.summary}</p>
                       
                       {record.aiExtractedFields.values && Object.keys(record.aiExtractedFields.values).length > 0 && (
                         <div className="flex flex-wrap gap-1 pt-1">
                           {Object.entries(record.aiExtractedFields.values).slice(0, 3).map(([k, v]) => (
-                            <span key={k} className="px-1.5 py-0.5 bg-white rounded border border-slate-200 text-[10px] font-mono text-slate-700">
+                            <span key={k} className="px-2 py-0.5 bg-white rounded-lg border border-[#E8DEC8] text-[10px] font-mono text-[#2B2521]">
                               {k}: {v}
                             </span>
                           ))}
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between pt-1 text-[11px] text-slate-400">
+                      <div className="flex items-center justify-between pt-1 text-[11px] text-[#82786D]">
                         <span className="font-mono">{record.category}</span>
                         {record.fileUrl && (
                           <a
                             href={record.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline font-semibold flex items-center gap-1"
+                            className="text-[#C85A3B] hover:underline font-semibold flex items-center gap-1"
                           >
-                            <Download className="w-3 h-3" /> View Doc
+                            <span>Download Full PDF</span>
+                            <Download className="w-3 h-3" />
                           </a>
                         )}
                       </div>
@@ -772,8 +920,8 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
 
           {/* Right Column: AI Prescription Safety Engine */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="heal-card p-6 space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="heal-card p-6 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E8E1D5]">
                 <div className="flex items-center gap-2.5">
                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                     <Sparkles className="w-5 h-5" />
@@ -1542,6 +1690,162 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ALL PATIENTS DIRECTORY MODAL */}
+      {isPatientDirectoryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl shadow-2xl border border-[#E8E1D5] w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="px-6 py-4.5 border-b border-[#E8E1D5] flex items-center justify-between bg-[#FAF7F2]">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-[#2B2521] text-white rounded-2xl">
+                  <Users className="w-5 h-5 text-[#F5C7B8]" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#2B2521] text-base sm:text-lg">
+                    All Registered Patients Directory
+                  </h3>
+                  <p className="text-xs text-[#82786D]">
+                    {allPatients.length} Registered Patients in Hospital Network · Real-Time Decentralized EHR
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsPatientDirectoryOpen(false)}
+                className="p-2 text-[#82786D] hover:text-[#2B2521] hover:bg-[#EAE2D5] rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Search & Filter Bar */}
+            <div className="p-4 sm:p-5 border-b border-[#E8E1D5] bg-white">
+              <div className="relative">
+                <Search className="w-4 h-4 text-[#82786D] absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={directorySearchQuery}
+                  onChange={e => setDirectorySearchQuery(e.target.value)}
+                  placeholder="Filter patients by name, Health ID (HL-...), email, blood group, or allergies..."
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F2] rounded-2xl text-xs border border-[#E8E1D5] font-semibold text-[#2B2521] placeholder-[#82786D] focus:outline-none focus:ring-2 focus:ring-[#C85A3B]"
+                />
+              </div>
+            </div>
+
+            {/* Patients List Grid */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 bg-[#FAF7F2]/40">
+              {allPatients
+                .filter(p => {
+                  const q = directorySearchQuery.toLowerCase().trim();
+                  if (!q) return true;
+                  return (
+                    p.name.toLowerCase().includes(q) ||
+                    p.healthId.toLowerCase().includes(q) ||
+                    p.email.toLowerCase().includes(q) ||
+                    p.emergencyProfile?.bloodGroup?.toLowerCase().includes(q) ||
+                    p.emergencyProfile?.allergies?.some(a => a.toLowerCase().includes(q)) ||
+                    p.emergencyProfile?.criticalConditions?.some(c => c.toLowerCase().includes(q))
+                  );
+                })
+                .map(p => {
+                  const isCurrent = p.id === searchedPatient.id;
+                  return (
+                    <div
+                      key={p.id}
+                      className={`p-5 rounded-3xl border transition-all space-y-4 ${
+                        isCurrent
+                          ? 'bg-white border-[#C85A3B] shadow-md ring-2 ring-[#C85A3B]/20'
+                          : 'bg-white border-[#E8E1D5] hover:border-[#C85A3B] shadow-xs'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <img
+                            src={p.registeredBiometrics?.facePhotoUrl || p.avatarUrl}
+                            alt={p.name}
+                            className="w-14 h-14 rounded-2xl object-cover border-2 border-[#E8DEC8] shadow-xs shrink-0"
+                          />
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h4 className="font-black text-base text-[#2B2521]">{p.name}</h4>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#FAF7F2] text-[#2B2521] border border-[#E8DEC8]">
+                                {p.healthId}
+                              </span>
+                              {isCurrent && (
+                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#2B2521] text-[#F5C7B8]">
+                                  Currently Open in EHR
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-xs text-[#63594F] mt-1 flex flex-wrap items-center gap-3">
+                              <span><strong>DOB:</strong> {p.dob || '1992-04-14'}</span>
+                              <span>•</span>
+                              <span><strong>Gender:</strong> {p.gender || 'Female'}</span>
+                              <span>•</span>
+                              <span><strong>Blood Group:</strong> <span className="text-[#BA3B3B] font-bold">{p.emergencyProfile?.bloodGroup || 'A+'}</span></span>
+                              <span>•</span>
+                              <span><strong>Phone:</strong> {p.phone || '+1 (555) 438-9210'}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleSelectPatient(p)}
+                          className={`px-5 py-2.5 rounded-2xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer shrink-0 ${
+                            isCurrent
+                              ? 'bg-[#2D6346] text-white'
+                              : 'bg-[#2B2521] hover:bg-[#3D352E] text-white active:scale-95'
+                          }`}
+                        >
+                          <FileText className="w-3.5 h-3.5 text-[#F5C7B8]" />
+                          <span>{isCurrent ? 'Viewing Active EHR ✓' : 'Open Patient EHR →'}</span>
+                        </button>
+                      </div>
+
+                      {/* Clinical Baseline Summary Row */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E8E1D5] text-xs">
+                        <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E8DEC8] space-y-1">
+                          <span className="text-[#82786D] font-bold text-[11px] block uppercase tracking-wider">
+                            Documented Allergies:
+                          </span>
+                          <p className="text-[#BA3B3B] font-semibold">
+                            {p.emergencyProfile?.allergies?.join(', ') || 'No known drug allergies'}
+                          </p>
+                        </div>
+
+                        <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E8DEC8] space-y-1">
+                          <span className="text-[#82786D] font-bold text-[11px] block uppercase tracking-wider">
+                            Current Daily Medications:
+                          </span>
+                          <p className="text-[#2B2521] font-semibold">
+                            {p.emergencyProfile?.criticalMeds?.join(', ') || 'No active daily medications'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3.5 border-t border-[#E8E1D5] bg-white flex justify-between items-center text-xs">
+              <span className="text-[#82786D]">
+                Select any patient to switch the Doctor Consultation & AI Prescription workflow.
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsPatientDirectoryOpen(false)}
+                className="px-5 py-2 bg-[#2B2521] hover:bg-[#3D352E] text-white rounded-2xl text-xs font-bold transition-colors cursor-pointer"
+              >
+                Close Directory
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
