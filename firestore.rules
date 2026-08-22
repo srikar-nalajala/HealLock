@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isPatient(patientId) {
+      return isAuthenticated() && (request.auth.uid == patientId || request.auth.token.role == 'patient');
+    }
+    
+    function isStaff() {
+      return isAuthenticated() && (request.auth.token.role in ['doctor', 'pharmacist', 'admin', 'emergency']);
+    }
+    
+    // User Profile Rules
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && (request.auth.uid == userId || isStaff());
+    }
+    
+    // Patient Data Rules
+    match /patients/{patientId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (request.auth.uid == patientId || isStaff());
+      
+      // Medical Records (Sensitive)
+      match /records/{recordId} {
+        allow read, write: if isAuthenticated();
+      }
+      
+      // Consent Grants
+      match /consents/{consentId} {
+        allow read, write: if isAuthenticated();
+      }
+      
+      // Prescriptions
+      match /prescriptions/{rxId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+    
+    // Hospital Access Requests
+    match /access_requests/{requestId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Access Audit Logs (Immutable Ledger)
+    match /access_audit_logs/{eventId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Immutable
+    }
+    
+    // Notifications
+    match /notifications/{notifId} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
