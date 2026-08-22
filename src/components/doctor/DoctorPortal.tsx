@@ -479,15 +479,15 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Doctor Header Banner with Mode Navigation */}
-      <div className="p-5 rounded-3xl bg-gradient-to-r from-[#241F1C] via-[#332A24] to-[#201B18] text-[#FAF7F2] shadow-xl border border-[#3E352F] flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-[#241F1C] via-[#332A24] to-[#201B18] text-[#FAF7F2] shadow-xl border border-[#3E352F] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="p-3 bg-white/10 rounded-2xl border border-white/15">
-            <Stethoscope className="w-8 h-8 text-[#FAF7F2]" />
+          <div className="p-3 bg-white/10 rounded-2xl border border-white/15 shrink-0">
+            <Stethoscope className="w-7 h-7 sm:w-8 sm:h-8 text-[#FAF7F2]" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-black text-[#FAF7F2]">{staff.name}</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs bg-[#C85A3B]/30 text-[#F5C7B8] font-bold border border-[#C85A3B]/40">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-black text-[#FAF7F2]">{staff.name}</h2>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs bg-[#C85A3B]/30 text-[#F5C7B8] font-bold border border-[#C85A3B]/40">
                 {staff.department}
               </span>
             </div>
@@ -498,15 +498,15 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         </div>
 
         {/* Tab Selector & Emergency Trigger */}
-        <div className="flex items-center gap-2">
-          <div className="flex bg-black/30 p-1 rounded-2xl border border-white/15 text-xs font-bold">
+        <div className="w-full sm:w-auto flex items-center gap-2">
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row bg-black/30 p-1 rounded-2xl border border-white/15 text-xs font-bold gap-1">
             <button
               type="button"
               onClick={() => {
                 stopCamera();
                 setActiveDoctorTab('consultation');
               }}
-              className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`w-full sm:w-auto px-3.5 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeDoctorTab === 'consultation'
                   ? 'bg-[#FAF7F2] text-[#2B2521] shadow-md font-black'
                   : 'text-[#D8CEBE] hover:text-white'
@@ -519,14 +519,14 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
             <button
               type="button"
               onClick={() => setActiveDoctorTab('emergency_unlock')}
-              className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`w-full sm:w-auto px-3.5 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeDoctorTab === 'emergency_unlock'
                   ? 'bg-[#BA3B3B] text-white shadow-md font-black animate-pulse'
                   : 'text-[#F5C7B8] hover:text-white hover:bg-[#BA3B3B]/30'
               }`}
             >
               <ShieldAlert className="w-3.5 h-3.5" />
-              <span>🚨 Emergency Multi-Factor Unlock</span>
+              <span>🚨 Emergency Unlock</span>
             </button>
           </div>
         </div>
@@ -534,9 +534,9 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
 
       {/* Patient Search Bar */}
       <div className="p-4 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs">
-        <form onSubmit={handleSearchPatient} className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[260px]">
-            <Search className="w-4 h-4 text-[#82786D] absolute left-3 top-2.5" />
+        <form onSubmit={handleSearchPatient} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-[#82786D] absolute left-3 top-3 sm:top-2.5" />
             <input
               type="text"
               value={searchQuery}
@@ -548,7 +548,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
           <button
             type="submit"
             disabled={isSearching}
-            className="px-5 py-2 bg-[#2B2521] hover:bg-[#3D352E] text-[#FAF7F2] rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+            className="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-[#2B2521] hover:bg-[#3D352E] text-[#FAF7F2] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
           >
             {isSearching ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />

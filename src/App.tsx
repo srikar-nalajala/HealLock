@@ -467,8 +467,8 @@ export function App() {
           />
         )}
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+        {/* Main Content Area with Mobile Bottom Clearance */}
+        <main className="flex-1 p-3.5 sm:p-8 pb-28 md:pb-8 max-w-7xl mx-auto w-full overflow-y-auto">
           {/* 1. Patient Portal Views */}
           {currentRole === 'patient' && (
             <>

@@ -42,58 +42,58 @@ export const EmergencyQrModal: React.FC<EmergencyQrModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl border border-[#E8E1D5] shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto flex flex-col">
         {/* Header */}
-        <div className="p-5 bg-gradient-to-r from-blue-700 via-indigo-800 to-slate-900 text-white flex items-center justify-between">
+        <div className="p-5 bg-gradient-to-r from-[#241F1C] via-[#332A24] to-[#201B18] text-[#FAF7F2] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-white/10 rounded-xl border border-white/20">
-              <QrCode className="w-6 h-6 text-blue-200" />
+            <div className="p-2.5 bg-white/10 rounded-xl border border-white/15">
+              <QrCode className="w-6 h-6 text-[#F5C7B8]" />
             </div>
             <div>
               <h3 className="font-bold text-base">Emergency Health QR & ID Badge</h3>
-              <p className="text-xs text-blue-200">
-                Single-Factor Emergency Access Token · FIPS-140 Zero Knowledge
+              <p className="text-xs text-[#D8CEBE]">
+                Single-Factor Emergency Access Token · FIPS-140 Sovereign
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Printable Physical ID Card Card Layout */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white border-2 border-slate-700 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
+        <div className="p-5 sm:p-6 space-y-6">
+          {/* Printable Physical ID Card Layout */}
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-[#241F1C] via-[#332A24] to-[#201B18] text-white border-2 border-[#3E352F] shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/15 pb-3">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-rose-500 animate-ping" />
-                <span className="font-black text-xs tracking-wider text-rose-300 uppercase">HEALLOCK EMERGENCY ID CARD</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#BA3B3B] animate-ping" />
+                <span className="font-black text-[11px] sm:text-xs tracking-wider text-[#F5C7B8] uppercase">HEALLOCK EMERGENCY ID CARD</span>
               </div>
-              <span className="text-[10px] font-mono text-slate-400">HL-VERIFIED</span>
+              <span className="text-[10px] font-mono text-[#D8CEBE]">HL-VERIFIED</span>
             </div>
 
-            <div className="flex items-center justify-between gap-4">
-              <div className="space-y-2">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+              <div className="space-y-2 text-center sm:text-left">
                 <div>
                   <h4 className="text-lg font-black text-white">{patient.name}</h4>
-                  <p className="text-xs text-slate-300 font-mono">ID: {patient.healthId}</p>
+                  <p className="text-xs text-[#D8CEBE] font-mono">ID: {patient.healthId}</p>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs">
+                  <div className="px-2.5 py-0.5 rounded-full bg-[#BA3B3B]/30 text-[#F5C7B8] border border-[#BA3B3B]/40 font-bold">
                     Blood: {patient.emergencyProfile.bloodGroup}
                   </div>
-                  <div className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
+                  <div className="px-2.5 py-0.5 rounded-full bg-[#C85A3B]/30 text-[#F5C7B8] border border-[#C85A3B]/40 font-bold">
                     Allergies: {patient.emergencyProfile.allergies.length}
                   </div>
                 </div>
 
-                <div className="text-[10px] text-slate-400 font-mono pt-1">
+                <div className="text-[10px] text-[#82786D] font-mono pt-1">
                   Face Ref: {patient.registeredBiometrics.faceTemplateRef.substring(0, 14)}...
                 </div>
               </div>
@@ -105,44 +105,26 @@ export const EmergencyQrModal: React.FC<EmergencyQrModalProps> = ({
                   alt="Emergency QR Code"
                   className="w-24 h-24 rounded-lg object-contain"
                 />
-                <span className="text-[9px] font-mono text-slate-800 font-bold mt-1">SCAN FOR ER</span>
+                <span className="text-[9px] font-mono text-[#2B2521] font-bold mt-1">SCAN FOR ER</span>
               </div>
             </div>
           </div>
 
-          {/* Cryptographic JSON Payload Inspector */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-slate-700">Cryptographic QR Payload String:</span>
-              <button
-                type="button"
-                onClick={handleCopyPayload}
-                className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 cursor-pointer"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied to Clipboard' : 'Copy JSON'}</span>
-              </button>
-            </div>
-            <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl text-[11px] font-mono overflow-x-auto max-h-36 border border-slate-800">
-              {JSON.stringify(JSON.parse(payloadString), null, 2)}
-            </pre>
-          </div>
-
           {/* Actions */}
-          <div className="flex items-center justify-between gap-3 pt-2">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
             <button
               type="button"
               onClick={handlePrint}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2.5 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#2B2521] rounded-xl text-xs font-bold flex items-center gap-1.5 border border-[#E8E1D5] transition-colors cursor-pointer"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-4 h-4 text-[#C85A3B]" />
               <span>Print Badge Card</span>
             </button>
 
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md cursor-pointer"
+              className="px-6 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white rounded-xl text-xs font-bold shadow-md cursor-pointer"
             >
               Close
             </button>
