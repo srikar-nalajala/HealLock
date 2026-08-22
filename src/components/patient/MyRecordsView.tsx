@@ -64,9 +64,9 @@ export const MyRecordsView: React.FC<MyRecordsViewProps> = ({
       {/* Top Header with Upload Actions */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">My Encrypted Medical Records</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            AES-256 field-encrypted · Firebase Storage & Cloud Firestore Persistent
+          <h1 className="text-2xl font-black text-[#2B2521] tracking-tight">My Encrypted Medical Records</h1>
+          <p className="text-xs text-[#82786D] mt-0.5">
+            AES-256 field-encrypted · Persistent Cloud Sovereign Storage
           </p>
         </div>
 
@@ -74,34 +74,34 @@ export const MyRecordsView: React.FC<MyRecordsViewProps> = ({
           <button
             type="button"
             onClick={onOpenManualUpload}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer"
+            className="px-4 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white font-bold rounded-2xl text-xs flex items-center gap-2 shadow-xs transition-all active:scale-98 cursor-pointer"
           >
-            <UploadCloud className="w-4 h-4" />
+            <UploadCloud className="w-4 h-4 text-[#F5C7B8]" />
             <span>Upload Record / File</span>
           </button>
 
           <button
             type="button"
             onClick={onOpenScanner}
-            className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer"
+            className="px-4 py-2.5 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#5B4886] font-bold rounded-2xl text-xs flex items-center gap-2 border border-[#DCD3EB] transition-all cursor-pointer"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 text-[#5B4886]" />
             <span>Document AI Scan</span>
           </button>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-blue-600 text-white shadow-2xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[#2B2521] text-white shadow-xs'
+                  : 'bg-[#FAF7F2] text-[#63594F] hover:bg-[#EAE2D5]'
               }`}
             >
               {cat === 'all' ? `All Records (${records.length})` : cat}
@@ -110,71 +110,68 @@ export const MyRecordsView: React.FC<MyRecordsViewProps> = ({
         </div>
 
         <div className="relative flex-1 sm:max-w-xs">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-[#82786D] absolute left-3 top-2.5" />
           <input
             type="text"
-            placeholder="Search records, diagnoses, biomarkers..."
+            placeholder="Search records, diagnoses, summary..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 rounded-xl text-xs border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-3 py-2 bg-[#FAF7F2] rounded-xl text-xs border border-[#E8E1D5] text-[#2B2521] placeholder-[#82786D] focus:outline-none focus:ring-2 focus:ring-[#C85A3B]"
           />
         </div>
       </div>
 
       {/* Records Grid */}
       {filteredRecords.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-2xl border border-slate-200 space-y-3">
-          <FileText className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="font-bold text-slate-700 text-base">No Medical Records Found</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+        <div className="p-12 text-center bg-white rounded-3xl border border-[#E8E1D5] space-y-4">
+          <FileText className="w-12 h-12 text-[#82786D]/40 mx-auto" />
+          <h3 className="font-bold text-[#2B2521] text-base">No Medical Records Found</h3>
+          <p className="text-xs text-[#82786D] max-w-sm mx-auto">
             Upload your first encrypted record or use the Document AI OCR scanner to add records.
           </p>
           <button
             type="button"
             onClick={onOpenManualUpload}
-            className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs cursor-pointer"
+            className="px-5 py-2.5 bg-[#2B2521] text-white font-bold rounded-2xl text-xs inline-flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
             <UploadCloud className="w-4 h-4" />
             <span>Upload Record Now</span>
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRecords.map(record => (
             <div
               key={record.id}
               onClick={() => setSelectedRecord(record)}
-              className="heal-card p-5 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl shadow-xs transition-all cursor-pointer flex flex-col justify-between space-y-4 group"
+              className="heal-card p-6 bg-white border border-[#E8E1D5] hover:border-[#C85A3B] rounded-3xl shadow-sm transition-all cursor-pointer flex flex-col justify-between space-y-4 group"
             >
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 font-mono">
+                  <span className="px-3 py-1 rounded-xl text-xs font-bold bg-[#FAF7F2] text-[#B25838] border border-[#E8DEC8] font-mono">
                     {record.category}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-medium">{record.date}</span>
+                  <span className="text-xs text-[#82786D] font-medium">{record.date}</span>
                 </div>
 
-                <h3 className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">
+                <h3 className="font-bold text-[#2B2521] text-base group-hover:text-[#C85A3B] transition-colors">
                   {record.title}
                 </h3>
 
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-[#63594F] line-clamp-2 leading-relaxed">
                   {record.aiExtractedFields.summary}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1 text-slate-500 text-[11px]">
-                  <Building2 className="w-3.5 h-3.5" />
-                  <span className="truncate max-w-[130px]">{record.hospitalName}</span>
+              <div className="pt-3 border-t border-[#E8E1D5] flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 text-[#63594F]">
+                  <Building2 className="w-3.5 h-3.5 text-[#C85A3B]" />
+                  <span className="truncate max-w-[130px] font-medium">{record.hospitalName}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {record.fileSize && (
-                    <span className="text-[10px] font-mono text-slate-400">{record.fileSize}</span>
-                  )}
-                  <span className="text-emerald-600 font-bold text-[11px] flex items-center gap-1">
-                    <Lock className="w-3 h-3" /> Encrypted
+                  <span className="text-[#2D6346] font-bold text-xs flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5" /> Encrypted
                   </span>
                 </div>
               </div>

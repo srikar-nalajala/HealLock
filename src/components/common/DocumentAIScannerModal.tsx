@@ -148,97 +148,97 @@ export const DocumentAIScannerModal: React.FC<DocumentAIScannerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/65 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl border border-[#E8E1D5] w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+        <div className="px-6 py-4 border-b border-[#E8E1D5] flex items-center justify-between bg-[#FAF7F2]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/10 flex items-center justify-center text-purple-600 border border-purple-200">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-[#2B2521] flex items-center justify-center text-[#FAF7F2] border border-[#3E352F]">
+              <Sparkles className="w-5 h-5 text-[#F5C7B8]" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 text-lg">Document AI & OCR Extraction Engine</h3>
-              <p className="text-xs text-slate-500">
-                Claude Vision OCR · Field-Level Extraction · AES-256 Client Encryption
+              <h3 className="font-bold text-[#2B2521] text-lg">Document AI & OCR Engine</h3>
+              <p className="text-xs text-[#82786D]">
+                Vision OCR · Automated Entity Extraction · Sovereign AES-256 Storage
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-xl transition-colors"
+            className="p-2 text-[#82786D] hover:text-[#2B2521] hover:bg-[#EAE2D5] rounded-xl transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-5 flex-1 bg-slate-50/50">
+        <div className="p-6 overflow-y-auto space-y-5 flex-1 bg-[#FAF7F2]/40">
           {scanStep === 'idle' && (
             <div className="space-y-4">
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <div className="text-xs font-bold text-[#63594F] uppercase tracking-wider">
                 Select Sample Medical Document to Process
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => setSelectedPreset('lipid')}
-                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer ${
                     selectedPreset === 'lipid'
-                      ? 'border-purple-600 bg-purple-50/50 text-purple-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                      ? 'border-[#C85A3B] bg-[#FFF9F2] text-[#2B2521] shadow-2xs font-bold'
+                      : 'border-[#E8E1D5] hover:border-[#C85A3B] bg-white text-[#63594F]'
                   }`}
                 >
-                  <FileText className="w-6 h-6 text-purple-600 mb-2" />
+                  <FileText className="w-6 h-6 text-[#C85A3B] mb-2" />
                   <div className="font-bold text-xs">Lab Panel (Lipid/CBC)</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">Biomarker Extraction</div>
+                  <div className="text-[10px] text-[#82786D] mt-0.5">Biomarker Extraction</div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedPreset('discharge')}
-                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer ${
                     selectedPreset === 'discharge'
-                      ? 'border-purple-600 bg-purple-50/50 text-purple-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                      ? 'border-[#C85A3B] bg-[#FFF9F2] text-[#2B2521] shadow-2xs font-bold'
+                      : 'border-[#E8E1D5] hover:border-[#C85A3B] bg-white text-[#63594F]'
                   }`}
                 >
-                  <FileText className="w-6 h-6 text-blue-600 mb-2" />
+                  <FileText className="w-6 h-6 text-[#2B2521] mb-2" />
                   <div className="font-bold text-xs">Cardiology Summary</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">Clinical Note Parsing</div>
+                  <div className="text-[10px] text-[#82786D] mt-0.5">Clinical Note Parsing</div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedPreset('prescription')}
-                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer ${
                     selectedPreset === 'prescription'
-                      ? 'border-purple-600 bg-purple-50/50 text-purple-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                      ? 'border-[#C85A3B] bg-[#FFF9F2] text-[#2B2521] shadow-2xs font-bold'
+                      : 'border-[#E8E1D5] hover:border-[#C85A3B] bg-white text-[#63594F]'
                   }`}
                 >
-                  <FileText className="w-6 h-6 text-emerald-600 mb-2" />
+                  <FileText className="w-6 h-6 text-[#2D6346] mb-2" />
                   <div className="font-bold text-xs">Prescription Image</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">Dosage & Sig Rules</div>
+                  <div className="text-[10px] text-[#82786D] mt-0.5">Dosage & Sig Rules</div>
                 </button>
               </div>
 
               {/* Document Preview Box */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-2">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+              <div className="p-5 rounded-2xl bg-white border border-[#E8E1D5] space-y-2">
+                <div className="flex items-center justify-between text-xs text-[#82786D] font-mono">
                   <span>Document Stream Input</span>
                   <span>Patient ID: {patient.healthId}</span>
                 </div>
-                <pre className="p-3 bg-slate-900 text-slate-200 rounded-lg text-xs font-mono whitespace-pre-wrap leading-relaxed">
+                <pre className="p-3.5 bg-[#241F1C] text-[#FAF7F2] rounded-xl text-xs font-mono whitespace-pre-wrap leading-relaxed border border-[#3E352F]">
                   {presets[selectedPreset].text}
                 </pre>
               </div>
 
-              <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-800 flex items-center gap-2">
-                <Lock className="w-4 h-4 text-blue-600 shrink-0" />
+              <div className="p-4 rounded-2xl bg-[#EDF5F0] border border-[#C4DFC5] text-xs text-[#2D6346] flex items-center gap-2">
+                <Lock className="w-4 h-4 text-[#2D6346] shrink-0" />
                 <span>
-                  Extracted metadata is automatically encrypted with AES-256 off-chain. Only an on-chain event hash is minted to Hyperledger.
+                  Extracted metadata is automatically encrypted with AES-256 off-chain. Only an on-chain event hash is minted to the ledger.
                 </span>
               </div>
             </div>
@@ -246,18 +246,18 @@ export const DocumentAIScannerModal: React.FC<DocumentAIScannerModalProps> = ({
 
           {/* Processing Animation Steps */}
           {['ocr', 'extracting', 'encrypted'].includes(scanStep) && (
-            <div className="p-8 rounded-2xl bg-slate-900 text-white flex flex-col items-center justify-center text-center space-y-5 min-h-[300px]">
-              <div className="w-16 h-16 rounded-2xl bg-purple-600/20 border-2 border-purple-500 flex items-center justify-center text-purple-400 animate-pulse">
+            <div className="p-8 rounded-3xl bg-[#241F1C] text-white flex flex-col items-center justify-center text-center space-y-5 min-h-[300px] border border-[#3E352F]">
+              <div className="w-16 h-16 rounded-2xl bg-white/10 border-2 border-[#C85A3B] flex items-center justify-center text-[#F5C7B8] animate-pulse">
                 <Sparkles className="w-8 h-8 animate-spin" />
               </div>
 
               <div className="space-y-1">
-                <h4 className="text-base font-bold text-slate-200">
-                  {scanStep === 'ocr' && 'Step 1/3: Running Claude Vision OCR on Document Image...'}
+                <h4 className="text-base font-bold text-[#FAF7F2]">
+                  {scanStep === 'ocr' && 'Step 1/3: Running Vision OCR on Document Image...'}
                   {scanStep === 'extracting' && 'Step 2/3: Structuring Key Biomarkers & Clinical Entities...'}
                   {scanStep === 'encrypted' && 'Step 3/3: Applying AES-256 Field Encryption & Minting Hash...'}
                 </h4>
-                <p className="text-xs text-slate-400 font-mono">
+                <p className="text-xs text-[#D8CEBE] font-mono">
                   {scanStep === 'ocr' && 'Tokenizing text layers and detecting table matrix...'}
                   {scanStep === 'extracting' && 'Matching values to standardized LOINC & RxNorm ontologies...'}
                   {scanStep === 'encrypted' && 'SHA-256 Merkle root verification complete.'}
@@ -269,28 +269,28 @@ export const DocumentAIScannerModal: React.FC<DocumentAIScannerModalProps> = ({
           {/* Done Step */}
           {scanStep === 'done' && (
             <div className="space-y-4 animate-in zoom-in-95 duration-200">
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="p-5 rounded-2xl bg-[#EDF5F0] border border-[#C4DFC5] flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-[#2D6346] shrink-0 mt-0.5" />
                 <div className="text-xs">
-                  <p className="font-bold text-emerald-900 text-sm">
+                  <p className="font-bold text-[#2D6346] text-sm">
                     Medical Record Extracted & Verified Successfully!
                   </p>
-                  <p className="text-emerald-700 mt-0.5">
+                  <p className="text-[#2D6346]/90 mt-0.5">
                     {presets[selectedPreset].extracted.summary}
                   </p>
                 </div>
               </div>
 
               {/* Extracted Structured Entity View */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3">
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <div className="p-5 rounded-2xl bg-white border border-[#E8E1D5] space-y-3">
+                <div className="text-xs font-bold text-[#63594F] uppercase tracking-wider">
                   Extracted Structured Fields
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   {Object.entries(presets[selectedPreset].extracted.values || {}).map(([k, v]) => (
-                    <div key={k} className="p-2.5 bg-slate-50 rounded-lg border border-slate-100">
-                      <span className="text-slate-500 block">{k}</span>
-                      <span className="font-bold text-slate-800">{v}</span>
+                    <div key={k} className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E8DEC8]">
+                      <span className="text-[#82786D] block">{k}</span>
+                      <span className="font-bold text-[#2B2521]">{v}</span>
                     </div>
                   ))}
                 </div>
@@ -300,10 +300,10 @@ export const DocumentAIScannerModal: React.FC<DocumentAIScannerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-slate-200 bg-white flex justify-between items-center">
+        <div className="px-6 py-3.5 border-t border-[#E8E1D5] bg-white flex justify-between items-center">
           <button
             onClick={resetScanner}
-            className="text-xs text-slate-500 hover:text-slate-800"
+            className="text-xs text-[#82786D] hover:text-[#2B2521] cursor-pointer"
           >
             {scanStep === 'done' ? 'Process Another Document' : 'Cancel'}
           </button>
@@ -311,9 +311,9 @@ export const DocumentAIScannerModal: React.FC<DocumentAIScannerModalProps> = ({
           {scanStep === 'idle' && (
             <button
               onClick={handleStartProcessing}
-              className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white rounded-2xl text-xs font-bold transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 text-[#F5C7B8]" />
               <span>Run Document AI Pipeline</span>
             </button>
           )}
@@ -321,7 +321,7 @@ export const DocumentAIScannerModal: React.FC<DocumentAIScannerModalProps> = ({
           {scanStep === 'done' && (
             <button
               onClick={onClose}
-              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors"
+              className="px-5 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white rounded-2xl text-xs font-bold transition-colors cursor-pointer"
             >
               Done & View In Records
             </button>

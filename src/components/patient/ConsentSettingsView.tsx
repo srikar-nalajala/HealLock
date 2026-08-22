@@ -96,50 +96,50 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Consent & Access Control Management</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Principle 1 (Patient Control): Zero hospital access without explicit cryptographic permission.
+          <h1 className="text-2xl font-black text-[#2B2521] tracking-tight">Consent & Access Control</h1>
+          <p className="text-xs text-[#82786D] mt-0.5">
+            Zero hospital access without your explicit cryptographic authorization.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer"
+          className="px-4 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white font-bold rounded-2xl text-xs flex items-center gap-2 shadow-xs transition-all active:scale-98 cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 text-[#F5C7B8]" />
           <span>Grant New Hospital Consent</span>
         </button>
       </div>
 
       {/* Principle Banner */}
-      <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+      <div className="p-4 rounded-2xl bg-[#EDF5F0] border border-[#C4DFC5] text-xs text-[#2D6346] flex items-start gap-3">
+        <ShieldCheck className="w-5 h-5 text-[#2D6346] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-bold">Cryptographic Consent Minting (On-Chain Audit Layer)</span>
-          <p className="text-blue-800 leading-relaxed">
-            Every time you toggle, scope, or revoke consent, an event hash is signed with your identity and broadcasted to the blockchain ledger. Hospitals are legally and cryptographically bound to these exact access boundaries.
+          <span className="font-bold">Cryptographic Consent Minting</span>
+          <p className="text-[#2D6346]/90 leading-relaxed">
+            Every time you toggle, scope, or revoke consent, an event hash is signed with your sovereign identity and broadcasted to the ledger. Hospitals are bound to these exact access boundaries.
           </p>
         </div>
       </div>
 
       {/* INCOMING HOSPITAL ACCESS REQUESTS (Real-Time Queue) */}
       {pendingRequests.length > 0 && (
-        <div className="p-5 rounded-3xl bg-amber-50/90 border-2 border-amber-300 shadow-sm space-y-4 animate-in fade-in duration-200">
+        <div className="p-6 rounded-3xl bg-[#FFF9F2] border-2 border-[#E8DEC8] shadow-xs space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-amber-500 text-white rounded-xl">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-[#C85A3B] text-white rounded-2xl">
                 <BellRing className="w-5 h-5 animate-bounce" />
               </div>
               <div>
-                <h3 className="font-bold text-amber-950 text-base">Incoming Hospital Access Requests</h3>
-                <p className="text-xs text-amber-800">
+                <h3 className="font-bold text-[#2B2521] text-base">Incoming Hospital Access Requests</h3>
+                <p className="text-xs text-[#82786D]">
                   {pendingRequests.length} hospital(s) are requesting permission to review your health records
                 </p>
               </div>
             </div>
 
-            <span className="px-2.5 py-1 bg-amber-200 text-amber-900 text-xs font-bold rounded-full">
+            <span className="px-3 py-1 bg-[#FAF7F2] text-[#C85A3B] border border-[#E8DEC8] text-xs font-bold rounded-full">
               Action Required
             </span>
           </div>
@@ -148,27 +148,27 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
             {pendingRequests.map(req => (
               <div
                 key={req.id}
-                className="p-4 bg-white rounded-2xl border border-amber-200 shadow-xs flex flex-wrap items-center justify-between gap-4"
+                className="p-5 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs flex flex-wrap items-center justify-between gap-4"
               >
-                <div className="space-y-1.5 flex-1">
+                <div className="space-y-2 flex-1">
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-blue-600" />
-                    <span className="font-bold text-slate-900 text-sm">{req.hospitalName}</span>
-                    <span className="text-xs text-slate-400">·</span>
-                    <span className="text-xs text-indigo-700 font-semibold flex items-center gap-1">
-                      <Stethoscope className="w-3.5 h-3.5" />
+                    <Building2 className="w-4 h-4 text-[#C85A3B]" />
+                    <span className="font-bold text-[#2B2521] text-sm">{req.hospitalName}</span>
+                    <span className="text-xs text-[#82786D]">·</span>
+                    <span className="text-xs text-[#4F4740] font-semibold flex items-center gap-1">
+                      <Stethoscope className="w-3.5 h-3.5 text-[#C85A3B]" />
                       {req.doctorName}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-[#63594F]">
                     <strong>Reason for Request:</strong> "{req.reason}"
                   </p>
 
-                  <div className="flex items-center gap-1.5 pt-1">
-                    <span className="text-[11px] font-semibold text-slate-500">Requested Categories:</span>
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="text-[11px] font-semibold text-[#82786D]">Requested Scope:</span>
                     {req.requestedScope.map(s => (
-                      <span key={s} className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-bold border border-blue-200">
+                      <span key={s} className="px-2.5 py-0.5 bg-[#FAF7F2] text-[#2B2521] rounded-lg text-[10px] font-bold border border-[#E8DEC8]">
                         {s}
                       </span>
                     ))}
@@ -179,14 +179,14 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
                   <button
                     type="button"
                     onClick={() => handleRejectRequest(req)}
-                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#63594F] font-bold rounded-xl text-xs border border-[#E8E1D5] transition-colors cursor-pointer"
                   >
                     Decline
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOpenApproveModal(req)}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
+                    className="px-4 py-2 bg-[#2D6346] hover:bg-[#234F38] text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
                   >
                     <Check className="w-4 h-4" />
                     <span>Approve & Grant</span>
@@ -201,8 +201,8 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
       {/* Hospital Consents List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-slate-900 text-base">Active & Configured Hospital Consents</h2>
-          <span className="text-xs text-slate-500">{consents.length} Total Facilities</span>
+          <h2 className="font-bold text-[#2B2521] text-base">Configured Hospital Consents</h2>
+          <span className="text-xs text-[#82786D]">{consents.length} Total Facilities</span>
         </div>
 
         {consents.map(consent => {
@@ -211,24 +211,24 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
           return (
             <div
               key={consent.id}
-              className={`heal-card p-6 border transition-all ${
+              className={`heal-card p-6 border transition-all rounded-3xl ${
                 isActive
-                  ? 'bg-white border-slate-200 shadow-xs'
-                  : 'bg-slate-50 border-slate-200 opacity-70'
+                  ? 'bg-white border-[#E8E1D5] shadow-sm'
+                  : 'bg-[#FAF7F2]/60 border-[#E8E1D5] opacity-75'
               }`}
             >
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#E8E1D5]">
                 <div className="flex items-center gap-3.5">
                   <div
                     className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
-                      isActive ? 'bg-blue-50 text-blue-600' : 'bg-slate-200 text-slate-500'
+                      isActive ? 'bg-[#FAF7F2] text-[#C85A3B] border border-[#E8DEC8]' : 'bg-[#FAF7F2] text-[#82786D]'
                     }`}
                   >
                     <Building2 className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base">{consent.hospitalName}</h3>
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5 font-mono">
+                    <h3 className="font-bold text-[#2B2521] text-base">{consent.hospitalName}</h3>
+                    <div className="flex items-center gap-2 text-xs text-[#82786D] mt-0.5 font-mono">
                       <span>Granted: {new Date(consent.grantedAt).toLocaleDateString()}</span>
                       <span>·</span>
                       <span>Expires: {new Date(consent.expiresAt).toLocaleDateString()}</span>
@@ -238,10 +238,10 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
 
                 <div className="flex items-center gap-3">
                   <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${
                       isActive
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                        : 'bg-rose-100 text-rose-800 border border-rose-300'
+                        ? 'bg-[#EDF5F0] text-[#2D6346] border border-[#C4DFC5]'
+                        : 'bg-[#FDF2F0] text-[#BA3B3B] border border-[#F5C7C1]'
                     }`}
                   >
                     {consent.status.toUpperCase()}
@@ -250,10 +250,10 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
                   <button
                     type="button"
                     onClick={() => onToggleConsent(consent.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-[#0284c7] text-white hover:bg-sky-700'
-                        : 'bg-slate-300 text-slate-700 hover:bg-slate-400'
+                        ? 'bg-[#2B2521] text-white shadow-xs'
+                        : 'bg-[#FAF7F2] text-[#63594F] border border-[#E8E1D5] hover:bg-[#EAE2D5]'
                     }`}
                   >
                     {isActive ? 'Active (Toggle OFF)' : 'Inactive (Toggle ON)'}
@@ -263,7 +263,7 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
                     <button
                       type="button"
                       onClick={() => onRevokeConsent(consent.id)}
-                      className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      className="px-3.5 py-1.5 bg-[#FDF2F0] hover:bg-[#FBEAE8] text-[#BA3B3B] border border-[#F5C7C1] rounded-xl text-xs font-bold transition-colors cursor-pointer"
                     >
                       Revoke All
                     </button>
@@ -273,9 +273,9 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
 
               {/* Scopes Toggles */}
               <div className="pt-4 space-y-3">
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                <div className="text-xs font-bold text-[#63594F] uppercase tracking-wider flex items-center justify-between">
                   <span>Authorized Category Scope</span>
-                  <span className="text-[11px] text-slate-400 font-normal">Click tags to edit granular permissions</span>
+                  <span className="text-[11px] text-[#82786D] font-normal">Click tags to customize permissions</span>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -291,13 +291,13 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
                             : [...consent.scope, scope];
                           onUpdateScope(consent.id, nextScope);
                         }}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                           isScoped
-                            ? 'bg-blue-50 text-blue-700 border border-blue-300 shadow-2xs'
-                            : 'bg-slate-100 text-slate-400 border border-slate-200 hover:bg-slate-200'
+                            ? 'bg-[#FAF7F2] text-[#2B2521] border-2 border-[#C85A3B] shadow-2xs'
+                            : 'bg-[#FAF7F2]/50 text-[#82786D] border border-[#E8E1D5] hover:bg-[#FAF7F2]'
                         }`}
                       >
-                        {isScoped ? <Check className="w-3.5 h-3.5 text-blue-600" /> : <Plus className="w-3.5 h-3.5" />}
+                        {isScoped ? <Check className="w-3.5 h-3.5 text-[#C85A3B]" /> : <Plus className="w-3.5 h-3.5" />}
                         <span>{scope}</span>
                       </button>
                     );
@@ -311,17 +311,17 @@ export const ConsentSettingsView: React.FC<ConsentSettingsViewProps> = ({
 
       {/* Grant New Hospital Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl border border-[#E8E1D5] w-full max-w-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#E8E1D5] flex items-center justify-between bg-[#FAF7F2]">
               <div className="flex items-center gap-2.5">
-                <Building2 className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-base">Grant New Hospital Permission</h3>
+                <Building2 className="w-5 h-5 text-[#C85A3B]" />
+                <h3 className="font-bold text-[#2B2521] text-base">Grant Hospital Access Permission</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
+                className="p-1.5 text-[#82786D] hover:text-[#2B2521] rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>

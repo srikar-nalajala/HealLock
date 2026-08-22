@@ -50,25 +50,25 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Pharmacy Header */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-teal-700 to-emerald-800 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-white/10 rounded-xl border border-white/20">
-            <Pill className="w-7 h-7 text-teal-200" />
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-[#241F1C] via-[#332A24] to-[#201B18] text-[#FAF7F2] shadow-xl border border-[#3E352F] flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="p-3 bg-white/10 rounded-2xl border border-white/15">
+            <Pill className="w-7 h-7 text-[#F5C7B8]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-black">{staff.name}</h2>
-              <span className="px-2 py-0.5 rounded text-xs bg-emerald-500/40 text-emerald-100 font-semibold border border-emerald-400/30">
+              <h2 className="text-xl font-black text-white">{staff.name}</h2>
+              <span className="px-2.5 py-0.5 rounded-full text-xs bg-[#2D6346]/40 text-[#EDF5F0] font-semibold border border-[#2D6346]/50">
                 Hospital Pharmacy Dispensary
               </span>
             </div>
-            <p className="text-xs text-teal-200">
-              Role-Based Access: Medication & Prescription Data Only (RBAC Enforced)
+            <p className="text-xs text-[#D8CEBE]">
+              Role-Based Access: Medication & Prescription Fulfillment (RBAC Enforced)
             </p>
           </div>
         </div>
 
-        <div className="text-xs bg-white/10 px-3 py-1.5 rounded-xl border border-white/20 font-mono">
+        <div className="text-xs bg-white/10 px-3.5 py-1.5 rounded-xl border border-white/15 font-mono text-[#D8CEBE]">
           <span>Active Patient: {patient.name} ({patient.healthId})</span>
         </div>
       </div>
@@ -76,8 +76,8 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
       {/* Prescription Queue */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-slate-900 text-base">Pending & Active Prescriptions</h3>
-          <span className="text-xs text-slate-500">{prescriptions.length} Active in Record</span>
+          <h3 className="font-bold text-[#2B2521] text-base">Active Prescriptions Queue</h3>
+          <span className="text-xs text-[#82786D]">{prescriptions.length} Active in Record</span>
         </div>
 
         {prescriptions.map(rx => {
@@ -86,19 +86,19 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
           return (
             <div
               key={rx.id}
-              className="heal-card p-6 border border-slate-200 hover:border-teal-300 transition-all space-y-5"
+              className="heal-card p-6 bg-white rounded-3xl border border-[#E8E1D5] hover:border-[#C85A3B] transition-all space-y-5 shadow-sm"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E8E1D5]">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-teal-50 text-teal-700 rounded-xl">
+                  <div className="p-2.5 bg-[#FAF7F2] text-[#2D6346] rounded-2xl border border-[#E8DEC8]">
                     <Pill className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <div className="font-bold text-[#2B2521] text-sm flex items-center gap-2">
                       <span>Prescription #{rx.id.toUpperCase()}</span>
-                      <span className="text-xs text-slate-400 font-normal">· {rx.date}</span>
+                      <span className="text-xs text-[#82786D] font-normal">· {rx.date}</span>
                     </div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-[#63594F]">
                       Prescribed by <strong>{rx.doctorName}</strong> ({rx.hospitalName})
                     </div>
                   </div>
@@ -106,12 +106,12 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
 
                 <div>
                   {isDispensed ? (
-                    <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold flex items-center gap-1 border border-emerald-300">
+                    <span className="px-3 py-1 bg-[#EDF5F0] text-[#2D6346] rounded-full text-xs font-bold flex items-center gap-1 border border-[#C4DFC5]">
                       <Check className="w-3.5 h-3.5" /> Dispensed & Verified
                     </span>
                   ) : (
-                    <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-300">
-                      <Clock className="w-3.5 h-3.5" /> Ready for Fulfilment
+                    <span className="px-3 py-1 bg-[#FFF9F2] text-[#C85A3B] rounded-full text-xs font-bold flex items-center gap-1 border border-[#E8DEC8]">
+                      <Clock className="w-3.5 h-3.5" /> Ready for Fulfillment
                     </span>
                   )}
                 </div>
@@ -119,22 +119,22 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
 
               {/* Medication Details */}
               <div className="space-y-3">
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <div className="text-xs font-bold text-[#63594F] uppercase tracking-wider">
                   Prescribed Medication List
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {rx.medications.map((med, idx) => (
-                    <div key={idx} className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+                    <div key={idx} className="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8E1D5] text-xs space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800 text-sm">{med.name}</span>
-                        <span className="px-2 py-0.5 bg-teal-50 text-teal-700 font-mono rounded font-semibold">
+                        <span className="font-bold text-[#2B2521] text-sm">{med.name}</span>
+                        <span className="px-2.5 py-0.5 bg-white text-[#2D6346] font-mono rounded-lg font-bold border border-[#E8E1D5]">
                           {med.dosage}
                         </span>
                       </div>
-                      <div className="text-slate-600">
+                      <div className="text-[#63594F]">
                         <span className="font-semibold">Regimen:</span> {med.frequency} · {med.duration}
                       </div>
-                      <div className="text-slate-500 italic">
+                      <div className="text-[#82786D] italic">
                         "{med.instructions}"
                       </div>
                     </div>
@@ -143,14 +143,14 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
               </div>
 
               {/* AI Safety Engine Sign-Off */}
-              <div className="p-3.5 rounded-xl bg-teal-50/70 border border-teal-200 text-xs text-teal-900 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#EDF5F0] border border-[#C4DFC5] text-xs text-[#2D6346] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-600" />
+                  <ShieldCheck className="w-4 h-4 text-[#2D6346]" />
                   <span>
                     <strong>Clinical Safety Clearance:</strong> AI RxNorm interaction check verified zero adverse flag.
                   </span>
                 </div>
-                <span className="font-mono text-[11px] text-teal-700 font-semibold">DDInter Graph Pass ✓</span>
+                <span className="font-mono text-[11px] font-bold">DDInter Graph Pass ✓</span>
               </div>
 
               {/* Action Button */}
@@ -159,9 +159,9 @@ export const PharmacistPortal: React.FC<PharmacistPortalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDispenseRx(rx)}
-                    className="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer"
+                    className="px-5 py-2.5 bg-[#2B2521] hover:bg-[#3D352E] text-white font-bold rounded-2xl text-xs flex items-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
                   >
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4 text-[#F5C7B8]" />
                     <span>Dispense & Certify On-Chain</span>
                   </button>
                 </div>
