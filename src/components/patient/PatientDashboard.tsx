@@ -107,55 +107,56 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
       )}
 
       {/* Main Two-Column Grid matching reference UI */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Main Two-Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column (col-span-6): My Records + Active Hospital Consent */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className="lg:col-span-6 space-y-8">
           {/* 1. My Records Card */}
-          <div className="heal-card p-6 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-slate-900">My Records</h2>
-              <span className="text-xs font-mono text-slate-400 font-semibold">{records.length} Total Documents</span>
+          <div className="heal-card p-8 bg-white border border-[#E8E1D5] rounded-3xl shadow-sm space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-black text-[#2B2521]">My Records</h2>
+              <span className="text-xs font-mono text-[#82786D] font-bold">{records.length} Documents</span>
             </div>
 
             {/* 3 Categories Grid */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-4">
               {/* Lab Reports */}
               <button
                 type="button"
                 onClick={() => onNavigateTab('records')}
-                className="p-4 bg-slate-50/80 hover:bg-slate-100/90 rounded-xl border border-slate-200/80 flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
+                className="p-5 bg-[#FAF7F2] hover:bg-[#F3EFE6] rounded-2xl border border-[#E8E1D5] flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 mb-2 group-hover:scale-105 transition-transform">
-                  <FileText className="w-5 h-5 text-slate-500" />
+                <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8E1D5] flex items-center justify-center text-[#2B2521] mb-2.5 group-hover:scale-105 transition-transform shadow-2xs">
+                  <FileText className="w-5 h-5 text-[#C85A3B]" />
                 </div>
-                <div className="font-semibold text-slate-800 text-xs">Lab Reports</div>
-                <div className="text-xs text-slate-500 font-medium">({labReportsCount})</div>
+                <div className="font-bold text-[#2B2521] text-xs">Lab Reports</div>
+                <div className="text-xs text-[#82786D] font-semibold mt-0.5">({labReportsCount})</div>
               </button>
 
               {/* Prescriptions */}
               <button
                 type="button"
                 onClick={() => onNavigateTab('records')}
-                className="p-4 bg-slate-50/80 hover:bg-slate-100/90 rounded-xl border border-slate-200/80 flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
+                className="p-5 bg-[#FAF7F2] hover:bg-[#F3EFE6] rounded-2xl border border-[#E8E1D5] flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 mb-2 group-hover:scale-105 transition-transform">
-                  <Pill className="w-5 h-5 text-slate-500" />
+                <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8E1D5] flex items-center justify-center text-[#2B2521] mb-2.5 group-hover:scale-105 transition-transform shadow-2xs">
+                  <Pill className="w-5 h-5 text-[#3D6A56]" />
                 </div>
-                <div className="font-semibold text-slate-800 text-xs">Prescriptions</div>
-                <div className="text-xs text-slate-500 font-medium">({prescriptionsCount})</div>
+                <div className="font-bold text-[#2B2521] text-xs">Prescriptions</div>
+                <div className="text-xs text-[#82786D] font-semibold mt-0.5">({prescriptionsCount})</div>
               </button>
 
               {/* Diagnostic Scans */}
               <button
                 type="button"
                 onClick={() => onNavigateTab('records')}
-                className="p-4 bg-slate-50/80 hover:bg-slate-100/90 rounded-xl border border-slate-200/80 flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
+                className="p-5 bg-[#FAF7F2] hover:bg-[#F3EFE6] rounded-2xl border border-[#E8E1D5] flex flex-col items-center justify-center text-center transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 mb-2 group-hover:scale-105 transition-transform">
-                  <Scan className="w-5 h-5 text-slate-500" />
+                <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8E1D5] flex items-center justify-center text-[#2B2521] mb-2.5 group-hover:scale-105 transition-transform shadow-2xs">
+                  <Scan className="w-5 h-5 text-[#5B4886]" />
                 </div>
-                <div className="font-semibold text-slate-800 text-xs">Diagnostic Scans</div>
-                <div className="text-xs text-slate-500 font-medium">({scansCount})</div>
+                <div className="font-bold text-[#2B2521] text-xs">Scans & X-Rays</div>
+                <div className="text-xs text-[#82786D] font-semibold mt-0.5">({scansCount})</div>
               </button>
             </div>
 
@@ -163,7 +164,7 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
             <button
               type="button"
               onClick={() => onNavigateTab('records')}
-              className="w-full mt-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 shadow-2xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-3 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#2B2521] font-bold text-xs rounded-2xl border border-[#E8E1D5] shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>View All Encrypted Records</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -171,19 +172,19 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
           </div>
 
           {/* 2. Active Hospital Consent Card */}
-          <div className="heal-card p-6 bg-white border border-slate-200/90 rounded-2xl shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-slate-900">Active Hospital Consent</h2>
+          <div className="heal-card p-8 bg-white border border-[#E8E1D5] rounded-3xl shadow-sm space-y-6">
+            <h2 className="text-lg font-black text-[#2B2521]">Active Hospital Consent</h2>
 
             {activeConsent ? (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
-                      <Building2 className="w-5 h-5 text-slate-600" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-[#FAF7F2] border border-[#E8E1D5] flex items-center justify-center text-[#2B2521]">
+                      <Building2 className="w-5 h-5 text-[#C85A3B]" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-sm">{activeConsent.hospitalName}</h3>
-                      <p className="text-xs text-slate-500 font-mono">
+                      <h3 className="font-bold text-[#2B2521] text-sm">{activeConsent.hospitalName}</h3>
+                      <p className="text-xs text-[#82786D] font-mono">
                         Valid until {new Date(activeConsent.expiresAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                       </p>
                     </div>
@@ -191,14 +192,14 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
 
                   {/* Active / Inactive Toggle Switch */}
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-slate-500">
+                    <span className="text-xs font-bold text-[#63594F]">
                       {isConsentActive ? 'Active' : 'Revoked'}
                     </span>
                     <button
                       type="button"
                       onClick={() => onToggleConsent(activeConsent.id)}
                       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        isConsentActive ? 'bg-[#0284c7]' : 'bg-slate-300'
+                        isConsentActive ? 'bg-[#2D6346]' : 'bg-slate-300'
                       }`}
                     >
                       <span
@@ -211,11 +212,11 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                 </div>
 
                 {/* Scoped Categories */}
-                <div className="space-y-1.5 text-xs">
-                  <span className="font-bold text-slate-600">Permitted Scopes:</span>
-                  <div className="flex flex-wrap gap-1.5">
+                <div className="space-y-2 text-xs">
+                  <span className="font-bold text-[#63594F]">Permitted Scopes:</span>
+                  <div className="flex flex-wrap gap-2">
                     {activeConsent.scope.map(scope => (
-                      <span key={scope} className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg font-medium border border-blue-200 text-[11px]">
+                      <span key={scope} className="px-3 py-1 bg-[#FAF7F2] text-[#B25838] rounded-xl font-bold border border-[#E8DEC8] text-xs">
                         ✓ {scope}
                       </span>
                     ))}
@@ -227,45 +228,47 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                   <button
                     type="button"
                     onClick={() => onRevokeAll(activeConsent.hospitalId)}
-                    className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full py-3 bg-[#FDF2F0] hover:bg-[#FBEAE8] text-[#BA3B3B] font-bold text-xs rounded-2xl border border-[#F5C7C1] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>Revoke Hospital Consent</span>
                   </button>
                 )}
               </div>
             ) : (
-              <div className="text-xs text-slate-500 p-4 text-center">No configured hospital consents.</div>
+              <div className="text-xs text-[#82786D] p-6 text-center bg-[#FAF7F2] rounded-2xl border border-[#E8E1D5]">
+                No configured hospital consents.
+              </div>
             )}
           </div>
         </div>
 
         {/* Right Column (col-span-6): AI Insights + Recent Data Access Timeline */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className="lg:col-span-6 space-y-8">
           {/* 3. AI Health Insights & Prescription Safety Card */}
-          <div className="heal-card p-6 bg-white border border-slate-200/90 rounded-2xl shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-slate-900">AI Health Insights</h2>
+          <div className="heal-card p-8 bg-white border border-[#E8E1D5] rounded-3xl shadow-sm space-y-6">
+            <h2 className="text-lg font-black text-[#2B2521]">AI Health Insights</h2>
 
             {/* Insight 1: Blood Pressure */}
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3">
-              <div className="p-2 bg-emerald-100 text-emerald-700 rounded-lg shrink-0 mt-0.5">
+            <div className="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8E1D5] flex items-start gap-3.5">
+              <div className="p-2.5 bg-[#EDF5F0] text-[#2D6346] rounded-xl shrink-0 mt-0.5 border border-[#C4DFC5]">
                 <Lightbulb className="w-4 h-4" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="font-bold text-slate-800 text-xs">Blood Pressure Trend: Optimal</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+              <div className="space-y-1">
+                <h3 className="font-bold text-[#2B2521] text-xs">Blood Pressure Trend: Optimal</h3>
+                <p className="text-xs text-[#63594F] leading-relaxed">
                   Consistently trending in the normal range over the last 30 days (118/76 avg).
                 </p>
               </div>
             </div>
 
             {/* Insight 2: Prescription Safety Check */}
-            <div className="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200 flex items-start gap-3">
-              <div className="p-2 bg-emerald-600 text-white rounded-lg shrink-0 mt-0.5">
+            <div className="p-4 bg-[#EDF5F0] rounded-2xl border border-[#C4DFC5] flex items-start gap-3.5">
+              <div className="p-2.5 bg-[#2D6346] text-white rounded-xl shrink-0 mt-0.5 shadow-2xs">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="font-bold text-emerald-950 text-xs">Prescription Safety Check</h3>
-                <p className="text-xs text-emerald-900 leading-relaxed">
+              <div className="space-y-1">
+                <h3 className="font-bold text-[#1E432F] text-xs">Prescription Safety Check</h3>
+                <p className="text-xs text-[#2D6346] leading-relaxed">
                   No adverse interactions or duplicate regimens found across your active prescriptions.
                 </p>
               </div>
@@ -273,42 +276,42 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
           </div>
 
           {/* 4. Recent Data Access Timeline */}
-          <div className="heal-card p-6 bg-white border border-slate-200/90 rounded-2xl shadow-xs space-y-4">
+          <div className="heal-card p-8 bg-white border border-[#E8E1D5] rounded-3xl shadow-sm space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-900">Recent Data Access Timeline</h2>
+              <h2 className="text-lg font-black text-[#2B2521]">Recent Data Access Timeline</h2>
               <button
                 type="button"
                 onClick={() => onNavigateTab('timeline')}
-                className="text-xs text-blue-600 font-semibold hover:underline cursor-pointer"
+                className="text-xs text-[#C85A3B] font-bold hover:underline cursor-pointer"
               >
                 View Full Audit Ledger →
               </button>
             </div>
 
             {/* Timeline Items */}
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               {accessEvents.slice(0, 3).map((event, idx) => (
                 <div
                   key={event.id || idx}
-                  className="p-3.5 bg-slate-50/80 hover:bg-slate-100/90 rounded-xl border border-slate-200/80 flex items-center justify-between transition-colors text-xs"
+                  className="p-4 bg-[#FAF7F2] hover:bg-[#F3EFE6] rounded-2xl border border-[#E8E1D5] flex items-center justify-between transition-colors text-xs"
                 >
-                  <div className="space-y-1 max-w-[68%]">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-slate-900">{event.hospitalName}</span>
-                      <span className="text-slate-400">·</span>
-                      <span className="text-slate-500 font-medium">{event.staffName}</span>
+                  <div className="space-y-1 max-w-[65%]">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-[#2B2521]">{event.hospitalName}</span>
+                      <span className="text-[#82786D]">·</span>
+                      <span className="text-[#63594F] font-medium">{event.staffName}</span>
                     </div>
-                    <p className="text-slate-600 text-[11px] truncate">{event.action}</p>
+                    <p className="text-[#82786D] text-xs truncate">{event.action}</p>
                   </div>
 
                   {/* Blockchain Verified Badge with Tx Hash Inspector */}
                   <button
                     type="button"
                     onClick={() => onInspectTx(event)}
-                    className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-[11px] font-bold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                    className="px-3 py-1.5 bg-[#EDF5F0] hover:bg-[#E0EFE7] border border-[#C4DFC5] text-[#2D6346] text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shrink-0"
                     title={`Tx Hash: ${event.txHash}`}
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#2D6346]" />
                     <span>Blockchain Verified</span>
                   </button>
                 </div>

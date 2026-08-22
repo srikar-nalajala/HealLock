@@ -198,83 +198,66 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Emergency Warning Banner */}
-      <div className="p-4 rounded-2xl bg-rose-600 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-white/20 rounded-xl">
-            <ShieldAlert className="w-8 h-8 text-white animate-bounce" />
+      <div className="p-6 rounded-3xl bg-[#BA3B3B] text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="p-3 bg-white/20 rounded-2xl">
+            <ShieldAlert className="w-8 h-8 text-white" />
           </div>
           <div>
             <h2 className="text-xl font-black tracking-tight">Level-1 Emergency Access Terminal</h2>
-            <p className="text-rose-100 text-xs">
+            <p className="text-rose-100 text-xs mt-0.5">
               Single-Factor Sufficient Unlock · Mandatory On-Chain Immutable Logging · Minimum Necessary Scope
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-rose-700/80 px-3 py-1.5 rounded-xl border border-rose-400/40 text-xs font-mono">
+        <div className="flex items-center gap-2 bg-black/20 px-3.5 py-2 rounded-2xl border border-white/20 text-xs font-mono">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <span>Responder: {staff.name} ({staff.hospitalName})</span>
         </div>
       </div>
 
       {!unlocked ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Step 1: Select Verification Factor (Any ONE Sufficient) */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="heal-card p-6 space-y-5">
+          <div className="lg:col-span-7 space-y-6">
+            <div className="heal-card p-8 sm:p-9 space-y-6 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 1</span>
-                  <h3 className="text-base font-bold text-slate-900">Choose Any ONE Verification Factor</h3>
+                  <span className="text-xs font-bold text-[#C85A3B] uppercase tracking-wider">Step 1</span>
+                  <h3 className="text-lg font-black text-[#2B2521] mt-0.5">Choose Any ONE Verification Factor</h3>
                 </div>
-                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full">
+                <span className="px-3.5 py-1 bg-[#EDF5F0] text-[#2D6346] border border-[#C4DFC5] text-xs font-bold rounded-full">
                   1-Factor Sufficient
                 </span>
               </div>
 
               {/* Factor Selection Buttons */}
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  onClick={() => { stopCamera(); setSelectedFactor('qr'); setScanningState('idle'); }}
-                  className={`p-4 rounded-xl border-2 text-left flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                    selectedFactor === 'qr'
-                      ? 'border-blue-600 bg-blue-50/50 text-blue-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                  }`}
-                >
-                  <QrCode className={`w-8 h-8 mb-2 ${selectedFactor === 'qr' ? 'text-blue-600' : 'text-slate-500'}`} />
-                  <span className="font-bold text-xs">QR Code Scan</span>
-                  <span className="text-[10px] text-slate-500 mt-0.5">Card / Bracelet / Phone</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => { stopCamera(); setSelectedFactor('face'); setScanningState('idle'); }}
-                  className={`p-4 rounded-xl border-2 text-left flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                    selectedFactor === 'face'
-                      ? 'border-purple-600 bg-purple-50/50 text-purple-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                  }`}
-                >
-                  <ScanFace className={`w-8 h-8 mb-2 ${selectedFactor === 'face' ? 'text-purple-600' : 'text-slate-500'}`} />
-                  <span className="font-bold text-xs">Face Liveness</span>
-                  <span className="text-[10px] text-slate-500 mt-0.5">3D Template Match</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => { stopCamera(); setSelectedFactor('fingerprint'); setScanningState('idle'); }}
-                  className={`p-4 rounded-xl border-2 text-left flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                    selectedFactor === 'fingerprint'
-                      ? 'border-amber-600 bg-amber-50/50 text-amber-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                  }`}
-                >
-                  <Fingerprint className={`w-8 h-8 mb-2 ${selectedFactor === 'fingerprint' ? 'text-amber-600' : 'text-slate-500'}`} />
-                  <span className="font-bold text-xs">Fingerprint</span>
-                  <span className="text-[10px] text-slate-500 mt-0.5">WebAuthn / Scanner</span>
-                </button>
+              <div className="grid grid-cols-3 gap-3.5">
+                {[
+                  { id: 'face' as const, label: 'Face Liveness', sub: '3D Template Match', icon: ScanFace },
+                  { id: 'qr' as const, label: 'QR Code Scan', sub: 'Card / Wristband', icon: QrCode },
+                  { id: 'fingerprint' as const, label: 'Fingerprint', sub: 'WebAuthn / Sensor', icon: Fingerprint },
+                ].map(factor => {
+                  const Icon = factor.icon;
+                  const isSelected = selectedFactor === factor.id;
+                  return (
+                    <button
+                      key={factor.id}
+                      type="button"
+                      onClick={() => { stopCamera(); setSelectedFactor(factor.id); setScanningState('idle'); }}
+                      className={`p-4 rounded-2xl border-2 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
+                        isSelected
+                          ? 'border-[#C85A3B] bg-[#FDF8F5] text-[#2B2521] shadow-xs'
+                          : 'border-[#E8E1D5] bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] text-[#63594F]'
+                      }`}
+                    >
+                      <Icon className={`w-7 h-7 ${isSelected ? 'text-[#C85A3B]' : 'text-[#82786D]'}`} />
+                      <span className="font-bold text-xs">{factor.label}</span>
+                      <span className="text-[10px] text-[#82786D]">{factor.sub}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Interactive Sensor Scanner Box */}
@@ -396,7 +379,7 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
                   </p>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {[
                     'Trauma / Acute Incident',
                     'Cardiac Arrest / STEMI',
@@ -406,10 +389,10 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
                   ].map(option => (
                     <label
                       key={option}
-                      className={`flex items-center gap-3 p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                      className={`flex items-center gap-3.5 p-3.5 rounded-2xl border text-xs cursor-pointer transition-all ${
                         reasonCode === option
-                          ? 'border-rose-500 bg-rose-50/60 font-bold text-rose-900'
-                          : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                          ? 'border-[#BA3B3B] bg-[#FDF6F5] font-bold text-[#962828]'
+                          : 'border-[#E8E1D5] hover:bg-[#FAF7F2] text-[#4F4740]'
                       }`}
                     >
                       <input
@@ -418,7 +401,7 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
                         value={option}
                         checked={reasonCode === option}
                         onChange={() => setReasonCode(option)}
-                        className="text-rose-600 focus:ring-rose-500"
+                        className="text-[#BA3B3B] focus:ring-[#BA3B3B]"
                       />
                       <span>{option}</span>
                     </label>
@@ -430,29 +413,29 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
                       placeholder="Specify emergency reason (required)..."
                       value={customReason}
                       onChange={e => setCustomReason(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-rose-500"
+                      className="w-full text-xs p-3 rounded-xl bg-[#FAF7F2] border border-[#E8E1D5] text-[#2B2521] focus:ring-2 focus:ring-[#BA3B3B] focus:outline-none"
                     />
                   )}
                 </div>
               </div>
 
               {/* Action Button */}
-              <div className="pt-4 border-t border-slate-100 space-y-2">
+              <div className="pt-6 border-t border-[#E8E1D5] space-y-3">
                 <button
                   type="button"
                   disabled={scanningState !== 'verified'}
                   onClick={handleExecuteEmergencyUnlock}
-                  className={`w-full py-3.5 px-4 rounded-xl text-sm font-black text-white flex items-center justify-center gap-2 shadow-md transition-all ${
+                  className={`w-full py-4 px-6 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2 shadow-lg transition-all ${
                     scanningState === 'verified'
-                      ? 'bg-rose-600 hover:bg-rose-700 active:scale-98 cursor-pointer'
-                      : 'bg-slate-300 cursor-not-allowed opacity-70'
+                      ? 'bg-[#BA3B3B] hover:bg-[#A32A2A] active:scale-98 cursor-pointer ring-4 ring-[#BA3B3B]/20 animate-pulse'
+                      : 'bg-slate-300 cursor-not-allowed opacity-60'
                   }`}
                 >
                   <ShieldAlert className="w-5 h-5" />
                   <span>UNSEAL EMERGENCY PROFILE</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
-                <p className="text-[11px] text-center text-slate-400">
+                <p className="text-[11px] text-center text-[#82786D]">
                   Logs event to on-chain ledger & dispatches instant SMS alerts
                 </p>
               </div>
@@ -461,23 +444,25 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
         </div>
       ) : (
         /* Unlocked View — Displays ONLY the Emergency Profile (Minimum Necessary Access) */
-        <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="space-y-8 animate-in fade-in duration-200">
           {/* Success Banner */}
-          <div className="p-4 rounded-2xl bg-emerald-600 text-white flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-8 h-8 text-emerald-200" />
+          <div className="p-6 rounded-3xl bg-[#2D6346] text-white flex flex-wrap items-center justify-between gap-4 shadow-md">
+            <div className="flex items-center gap-3.5">
+              <div className="p-3 bg-white/15 rounded-2xl">
+                <CheckCircle2 className="w-7 h-7 text-emerald-200" />
+              </div>
               <div>
-                <h3 className="text-lg font-bold">Emergency Profile Successfully Unsealed</h3>
-                <p className="text-xs text-emerald-100">
-                  Minimum necessary medical profile visible. On-chain transaction: <span className="font-mono">{lastTx?.txHash.substring(0, 16)}...</span>
+                <h3 className="text-lg font-black text-white">Emergency Profile Successfully Unsealed</h3>
+                <p className="text-xs text-emerald-100/90 mt-0.5">
+                  Minimum necessary medical profile visible. On-chain transaction: <span className="font-mono text-emerald-200">{lastTx?.txHash.substring(0, 16)}...</span>
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={resetFlow}
-                className="px-3.5 py-1.5 bg-white text-slate-800 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer"
+                className="px-4 py-2 bg-white text-[#2B2521] hover:bg-[#FAF7F2] rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
               >
                 Seal & New Session
               </button>
@@ -485,50 +470,50 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
           </div>
 
           {/* Emergency Card Data */}
-          <div className="heal-card p-6 border-2 border-rose-300 shadow-xl space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
-              <div className="flex items-center gap-4">
+          <div className="heal-card p-8 sm:p-10 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm space-y-8">
+            <div className="flex flex-wrap items-center justify-between gap-6 pb-6 border-b border-[#E8E1D5]">
+              <div className="flex items-center gap-5">
                 <img
                   src={liveScannedPhoto || currentPatient.registeredBiometrics.facePhotoUrl || currentPatient.avatarUrl}
                   alt={currentPatient.name}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-rose-500 shadow-md ring-2 ring-rose-300"
+                  className="w-20 h-20 rounded-3xl object-cover border-2 border-[#BA3B3B] shadow-md ring-4 ring-[#BA3B3B]/10"
                 />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-2xl font-black text-slate-900">{currentPatient.name}</h2>
-                    <span className="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-700">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-black text-[#2B2521] tracking-tight">{currentPatient.name}</h2>
+                    <span className="px-3 py-0.5 rounded-full text-xs font-bold bg-[#FDF2F0] text-[#BA3B3B] border border-[#F5C7C1]">
                       EMERGENCY SCOPE ONLY
                     </span>
                   </div>
-                  <div className="text-xs text-slate-500 font-mono mt-0.5">
+                  <div className="text-xs text-[#82786D] font-mono">
                     Health ID: {currentPatient.healthId} · DOB: {currentPatient.dob} ({currentPatient.gender})
                   </div>
                 </div>
               </div>
 
-              {/* Big Blood Group */}
-              <div className="flex items-center gap-3 px-5 py-3 bg-rose-50 border-2 border-rose-400 rounded-2xl text-rose-700">
-                <Heart className="w-8 h-8 fill-rose-600 text-rose-600 animate-pulse" />
+              {/* Clean Blood Group Pill */}
+              <div className="flex items-center gap-4 px-6 py-4 bg-[#FDF2F0] border border-[#F5C7C1] rounded-3xl text-[#BA3B3B]">
+                <Heart className="w-9 h-9 fill-[#BA3B3B] text-[#BA3B3B] animate-pulse" />
                 <div>
-                  <div className="text-xs font-bold uppercase text-rose-500">Blood Group</div>
-                  <div className="text-3xl font-black text-rose-700">{currentPatient.emergencyProfile.bloodGroup}</div>
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#962828]">Blood Group</div>
+                  <div className="text-3xl font-black text-[#BA3B3B]">{currentPatient.emergencyProfile.bloodGroup}</div>
                 </div>
               </div>
             </div>
 
             {/* Vital Profile Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Allergies */}
-              <div className="p-5 rounded-2xl bg-rose-50 border border-rose-200 space-y-3">
-                <div className="flex items-center gap-2 text-rose-900 font-bold text-sm">
-                  <AlertTriangle className="w-5 h-5 text-rose-600" />
+              <div className="p-6 rounded-3xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-4">
+                <div className="flex items-center gap-2 text-[#962828] font-bold text-sm">
+                  <AlertTriangle className="w-5 h-5 text-[#BA3B3B]" />
                   <span>High-Alert Allergies</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {currentPatient.emergencyProfile.allergies.map(allergy => (
+                <div className="flex flex-wrap gap-2.5">
+                  {(currentPatient.emergencyProfile.allergies || ['No known allergies']).map(allergy => (
                     <span
                       key={allergy}
-                      className="px-3 py-1.5 bg-white text-rose-800 font-black text-xs rounded-xl border border-rose-300 shadow-xs"
+                      className="px-4 py-2 bg-white text-[#962828] font-bold text-xs rounded-2xl border border-[#F5C7C1] shadow-xs"
                     >
                       ⚠️ {allergy}
                     </span>
@@ -537,16 +522,16 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
               </div>
 
               {/* Critical Meds */}
-              <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 space-y-3">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
-                  <Activity className="w-5 h-5 text-amber-600" />
+              <div className="p-6 rounded-3xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-4">
+                <div className="flex items-center gap-2 text-[#7A402A] font-bold text-sm">
+                  <Activity className="w-5 h-5 text-[#C85A3B]" />
                   <span>Active Critical Medications</span>
                 </div>
-                <div className="space-y-1.5">
-                  {currentPatient.emergencyProfile.criticalMeds.map(med => (
+                <div className="space-y-2">
+                  {(currentPatient.emergencyProfile.criticalMeds || ['No critical daily medications']).map(med => (
                     <div
                       key={med}
-                      className="p-2 bg-white text-amber-900 font-bold text-xs rounded-lg border border-amber-200"
+                      className="p-3 bg-white text-[#4F4740] font-semibold text-xs rounded-xl border border-[#E8E1D5]"
                     >
                       • {med}
                     </div>
@@ -556,29 +541,29 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
             </div>
 
             {/* Emergency Contacts with One-Click Call */}
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="p-6 rounded-3xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-4">
               <div className="flex items-center justify-between">
-                <div className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-blue-600" />
-                  <span>Emergency Contacts (SMS Alert Dispatched)</span>
+                <div className="font-bold text-[#2B2521] text-sm flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[#C85A3B]" />
+                  <span>Emergency Contacts (SMS Push Sent)</span>
                 </div>
-                <span className="text-xs text-emerald-600 font-semibold">✓ Automated Push Sent</span>
+                <span className="text-xs text-[#2D6346] font-bold">✓ Automated Push Sent</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {currentPatient.emergencyProfile.emergencyContacts.map(c => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {(currentPatient.emergencyProfile.emergencyContacts || []).map(c => (
                   <div
                     key={c.phone}
-                    className="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between"
+                    className="p-4 bg-white rounded-2xl border border-[#E8E1D5] flex items-center justify-between shadow-2xs"
                   >
                     <div>
-                      <div className="font-bold text-slate-800 text-xs">
+                      <div className="font-bold text-[#2B2521] text-xs">
                         {c.name} ({c.relation})
                       </div>
-                      <div className="text-xs text-slate-500 font-mono">{c.phone}</div>
+                      <div className="text-xs text-[#82786D] font-mono mt-0.5">{c.phone}</div>
                     </div>
                     <a
                       href={`tel:${c.phone}`}
-                      className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs rounded-lg border border-emerald-200"
+                      className="px-3.5 py-1.5 bg-[#EDF5F0] hover:bg-[#E0EFE7] text-[#2D6346] font-bold text-xs rounded-xl border border-[#C4DFC5] transition-colors"
                     >
                       Call Now
                     </a>

@@ -970,122 +970,97 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
 
       {/* VIEW 2: Embedded Level-1 Emergency Multi-Factor Unlock (With Real Camera / Biometrics) */}
       {activeDoctorTab === 'emergency_unlock' && (
-        <div className="space-y-6 animate-in fade-in duration-200">
+        <div className="space-y-8 animate-in fade-in duration-200">
           {!emergencyUnlocked ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Step 1: Multi-Factor Selection */}
-              <div className="lg:col-span-7 space-y-4">
-                <div className="heal-card p-6 space-y-5">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Step 1: Factor Selection & Camera Feed */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="heal-card p-8 sm:p-9 space-y-6 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">Step 1</span>
-                      <h3 className="text-base font-bold text-slate-900">Choose Any ONE Verification Factor</h3>
+                      <span className="text-xs font-bold text-[#C85A3B] uppercase tracking-wider">Step 1</span>
+                      <h3 className="text-lg font-black text-[#2B2521] mt-0.5">Choose Verification Factor</h3>
                     </div>
-                    <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full">
-                      1-Factor Sufficient
+                    <span className="px-3.5 py-1 bg-[#EDF5F0] text-[#2D6346] border border-[#C4DFC5] text-xs font-bold rounded-full">
+                      Single Factor Sufficient
                     </span>
                   </div>
 
-                  {/* Factor Selection Buttons */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => { 
-                        stopCamera();
-                        setSelectedFactor('qr'); 
-                        setScanningState('idle'); 
-                      }}
-                      className={`p-4 rounded-xl border-2 text-left flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                        selectedFactor === 'qr'
-                          ? 'border-blue-600 bg-blue-50/50 text-blue-900 shadow-xs font-bold'
-                          : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                      }`}
-                    >
-                      <QrCode className={`w-8 h-8 mb-2 ${selectedFactor === 'qr' ? 'text-blue-600' : 'text-slate-500'}`} />
-                      <span className="text-xs">QR Scanner</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">Card / Wristband</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => { 
-                        stopCamera();
-                        setSelectedFactor('face'); 
-                        setScanningState('idle'); 
-                      }}
-                      className={`p-4 rounded-xl border-2 text-left flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                        selectedFactor === 'face'
-                          ? 'border-purple-600 bg-purple-50/50 text-purple-900 shadow-xs font-bold'
-                          : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                      }`}
-                    >
-                      <ScanFace className={`w-8 h-8 mb-2 ${selectedFactor === 'face' ? 'text-purple-600' : 'text-slate-500'}`} />
-                      <span className="text-xs">Face Liveness</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">Live Camera / AI</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => { 
-                        stopCamera();
-                        setSelectedFactor('fingerprint'); 
-                        setScanningState('idle'); 
-                      }}
-                      className={`p-4 rounded-xl border-2 text-left flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                        selectedFactor === 'fingerprint'
-                          ? 'border-amber-600 bg-amber-50/50 text-amber-900 shadow-xs font-bold'
-                          : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                      }`}
-                    >
-                      <Fingerprint className={`w-8 h-8 mb-2 ${selectedFactor === 'fingerprint' ? 'text-amber-600' : 'text-slate-500'}`} />
-                      <span className="text-xs">Fingerprint</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">WebAuthn / Sensor</span>
-                    </button>
+                  {/* Clean Spacious Factor Tabs */}
+                  <div className="grid grid-cols-3 gap-3.5">
+                    {[
+                      { id: 'face' as const, label: 'Face Liveness', sub: 'Live Neural AI', icon: ScanFace },
+                      { id: 'qr' as const, label: 'QR Scanner', sub: 'Wristband / Card', icon: QrCode },
+                      { id: 'fingerprint' as const, label: 'Fingerprint', sub: 'FIDO2 / Sensor', icon: Fingerprint },
+                    ].map(factor => {
+                      const Icon = factor.icon;
+                      const isSelected = selectedFactor === factor.id;
+                      return (
+                        <button
+                          key={factor.id}
+                          type="button"
+                          onClick={() => {
+                            stopCamera();
+                            setSelectedFactor(factor.id);
+                            setScanningState('idle');
+                          }}
+                          className={`p-4 rounded-2xl border-2 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
+                            isSelected
+                              ? 'border-[#C85A3B] bg-[#FDF8F5] text-[#2B2521] shadow-xs'
+                              : 'border-[#E8E1D5] bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] text-[#63594F]'
+                          }`}
+                        >
+                          <Icon className={`w-7 h-7 ${isSelected ? 'text-[#C85A3B]' : 'text-[#82786D]'}`} />
+                          <span className="text-xs font-bold">{factor.label}</span>
+                          <span className="text-[10px] text-[#82786D]">{factor.sub}</span>
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  {/* Real Interactive Sensor / Camera Feed Box */}
-                  <div className="p-6 rounded-2xl bg-slate-900 text-white relative overflow-hidden flex flex-col items-center justify-center text-center min-h-[260px]">
+                  {/* Interactive Camera / Sensor Feed Box */}
+                  <div className="p-8 rounded-3xl bg-[#241F1C] text-white relative overflow-hidden flex flex-col items-center justify-center text-center min-h-[290px] border border-[#3E352F]">
                     {/* Live Video Feed Element */}
                     <video
                       ref={videoRef}
                       autoPlay
                       playsInline
                       muted
-                      className={`absolute inset-0 w-full h-full object-cover rounded-2xl ${cameraActive ? 'block' : 'hidden'}`}
+                      className={`absolute inset-0 w-full h-full object-cover rounded-3xl ${cameraActive ? 'block' : 'hidden'}`}
                     />
 
                     {/* Camera Overlay Grid when active */}
                     {cameraActive && (
-                      <div className="absolute inset-0 border-2 border-emerald-400/60 rounded-2xl flex items-center justify-center pointer-events-none">
-                        <div className="w-48 h-48 border-2 border-dashed border-emerald-400 rounded-full animate-pulse flex items-center justify-center">
-                          <span className="text-xs font-mono font-bold bg-black/60 px-2.5 py-1 rounded text-emerald-300">
-                            Face Aligning...
+                      <div className="absolute inset-0 border-2 border-emerald-400/60 rounded-3xl flex items-center justify-center pointer-events-none">
+                        <div className="w-44 h-44 border-2 border-dashed border-emerald-400 rounded-full animate-pulse flex items-center justify-center">
+                          <span className="text-xs font-mono font-bold bg-black/60 px-3 py-1 rounded-full text-emerald-300">
+                            Aligning Face...
                           </span>
                         </div>
                       </div>
                     )}
 
                     {scanningState === 'idle' && (
-                      <div className="space-y-3 z-10">
-                        <div className="w-16 h-16 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center mx-auto text-slate-400">
-                          {selectedFactor === 'qr' && <QrCode className="w-8 h-8 text-blue-400" />}
-                          {selectedFactor === 'face' && <ScanFace className="w-8 h-8 text-purple-400" />}
-                          {selectedFactor === 'fingerprint' && <Fingerprint className="w-8 h-8 text-amber-400" />}
+                      <div className="space-y-4 z-10 max-w-sm">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center mx-auto text-[#D8CEBE]">
+                          {selectedFactor === 'face' && <ScanFace className="w-8 h-8 text-[#FAF7F2]" />}
+                          {selectedFactor === 'qr' && <QrCode className="w-8 h-8 text-[#FAF7F2]" />}
+                          {selectedFactor === 'fingerprint' && <Fingerprint className="w-8 h-8 text-[#FAF7F2]" />}
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-slate-200">
-                            Ready to scan {selectedFactor.toUpperCase()} factor
+                          <p className="text-sm font-bold text-white">
+                            Ready to Scan {selectedFactor.toUpperCase()}
                           </p>
-                          <p className="text-xs text-slate-400">
-                            {selectedFactor === 'face' ? 'Activate device camera for live face liveness detection' : selectedFactor === 'qr' ? 'Aim camera at patient emergency wristband/card' : 'Place finger on hardware biometric sensor'}
+                          <p className="text-xs text-[#D8CEBE] mt-1">
+                            {selectedFactor === 'face' ? 'Align patient face in frame for 128D neural recognition' : selectedFactor === 'qr' ? 'Aim camera at emergency wristband or sovereign card' : 'Place finger on hardware biometric sensor'}
                           </p>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                           <button
                             type="button"
                             onClick={handleStartRealScan}
-                            className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
+                            className="px-6 py-3 bg-[#BA3B3B] hover:bg-[#A32A2A] text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
                           >
                             <Camera className="w-4 h-4" />
                             <span>Start Real {selectedFactor.toUpperCase()} Scan</span>
@@ -1094,7 +1069,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                           <button
                             type="button"
                             onClick={handleInstantVerify}
-                            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition-all border border-slate-700 cursor-pointer flex items-center gap-1.5"
+                            className="px-4 py-3 bg-white/10 hover:bg-white/20 text-[#FAF7F2] rounded-xl text-xs font-bold transition-all border border-white/15 cursor-pointer flex items-center gap-1.5"
                           >
                             <Check className="w-3.5 h-3.5 text-emerald-400" />
                             <span>Instant Verify</span>
@@ -1102,50 +1077,42 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                         </div>
 
                         {cameraError && (
-                          <p className="text-[11px] text-amber-400 font-medium">{cameraError}</p>
+                          <p className="text-xs text-amber-300 font-medium">{cameraError}</p>
                         )}
                       </div>
                     )}
 
                     {scanningState === 'scanning' && (
-                      <div className="space-y-3 z-10 bg-black/60 p-4 rounded-xl backdrop-blur-xs">
-                        <RefreshCw className="w-10 h-10 text-rose-400 animate-spin mx-auto" />
+                      <div className="space-y-3 z-10 bg-black/60 p-6 rounded-2xl backdrop-blur-md">
+                        <RefreshCw className="w-10 h-10 text-[#C85A3B] animate-spin mx-auto" />
                         <div>
-                          <p className="text-sm font-bold text-rose-200">
-                            Verifying Biometric Liveness & Cryptographic Token...
+                          <p className="text-sm font-bold text-white">
+                            Analyzing Live Biometrics & Neural Embeddings...
                           </p>
-                          <p className="text-xs text-slate-300 font-mono">
-                            Matching registered hash: {searchedPatient.registeredBiometrics.faceTemplateRef.substring(0, 16)}...
+                          <p className="text-xs text-[#D8CEBE] mt-1">
+                            Searching candidate database in Supabase...
                           </p>
                         </div>
-
-                        <button
-                          type="button"
-                          onClick={handleInstantVerify}
-                          className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold cursor-pointer"
-                        >
-                          Complete Verification Now ✓
-                        </button>
                       </div>
                     )}
 
                     {scanningState === 'verified' && (
-                      <div className="space-y-3 z-10 bg-black/80 p-5 rounded-2xl backdrop-blur-md animate-in zoom-in-95 duration-200 border border-emerald-500/30 max-w-md mx-auto">
-                        <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto text-emerald-400">
+                      <div className="space-y-3 z-10 bg-black/85 p-6 rounded-3xl backdrop-blur-md animate-in zoom-in-95 duration-200 border border-emerald-500/40 max-w-md mx-auto">
+                        <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500 flex items-center justify-center mx-auto text-emerald-400">
                           <CheckCircle2 className="w-8 h-8" />
                         </div>
                         <div>
-                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                          <span className="px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold uppercase tracking-wider">
                             Patient Identified & Verified
                           </span>
-                          <h4 className="text-base font-bold text-white mt-1">
+                          <h4 className="text-lg font-bold text-white mt-1">
                             {searchedPatient.name}
                           </h4>
-                          <p className="text-xs text-emerald-300 font-mono">
-                            HealthID: {searchedPatient.healthId} · Blood Group: {searchedPatient.emergencyProfile.bloodGroup}
+                          <p className="text-xs text-emerald-300 font-mono mt-0.5">
+                            HealthID: {searchedPatient.healthId} · Blood Group: {searchedPatient.emergencyProfile?.bloodGroup || 'O+'}
                           </p>
-                          <p className="text-[11px] text-slate-300 mt-1 max-w-xs mx-auto">
-                            {scanFeedbackMessage || '128D FaceNet Embedding Match Confirmed · Emergency Profile Ready'}
+                          <p className="text-xs text-slate-300 mt-1 max-w-xs mx-auto">
+                            {scanFeedbackMessage || '128D FaceNet Match Confirmed · Ready to Unseal'}
                           </p>
                         </div>
                         <button
@@ -1154,7 +1121,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                             stopCamera();
                             setScanningState('idle');
                           }}
-                          className="text-xs text-slate-400 hover:text-white underline cursor-pointer"
+                          className="text-xs text-slate-400 hover:text-white underline cursor-pointer pt-1"
                         >
                           Rescan / Switch Patient
                         </button>
@@ -1162,19 +1129,19 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                     )}
 
                     {scanningState === 'failed' && (
-                      <div className="space-y-3 z-10 bg-black/85 p-5 rounded-2xl backdrop-blur-md animate-in zoom-in-95 duration-200 border border-rose-500/30 max-w-md mx-auto">
-                        <div className="w-14 h-14 rounded-full bg-rose-500/20 border-2 border-rose-500 flex items-center justify-center mx-auto text-rose-400">
+                      <div className="space-y-3 z-10 bg-black/85 p-6 rounded-3xl backdrop-blur-md animate-in zoom-in-95 duration-200 border border-rose-500/40 max-w-md mx-auto">
+                        <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500 flex items-center justify-center mx-auto text-rose-400">
                           <AlertTriangle className="w-8 h-8" />
                         </div>
                         <div>
-                          <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-mono text-[10px] font-bold uppercase tracking-wider">
-                            Identification Failed
+                          <span className="px-3 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                            Verification Mismatch
                           </span>
-                          <h4 className="text-sm font-bold text-rose-200 mt-1">
-                            Biometric Verification Mismatch
+                          <h4 className="text-sm font-bold text-white mt-1">
+                            No Matching Patient Found
                           </h4>
-                          <p className="text-xs text-rose-100/90 mt-1 max-w-sm mx-auto">
-                            {scanFeedbackMessage || `Live face did not match enrolled template for ${searchedPatient.name}. Access denied.`}
+                          <p className="text-xs text-rose-200 mt-1 max-w-sm mx-auto">
+                            {scanFeedbackMessage || 'Live face did not match enrolled templates.'}
                           </p>
                         </div>
                         <button
@@ -1183,9 +1150,9 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                             stopCamera();
                             setScanningState('idle');
                           }}
-                          className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md"
+                          className="px-5 py-2 bg-[#BA3B3B] hover:bg-[#A32A2A] text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md mt-2"
                         >
-                          Retry Scan / Switch Factor
+                          Retry Scan
                         </button>
                       </div>
                     )}
@@ -1193,19 +1160,19 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                 </div>
               </div>
 
-              {/* Step 2: Mandatory Reason Code */}
-              <div className="lg:col-span-5 space-y-4">
-                <div className="heal-card p-6 space-y-5 flex flex-col justify-between h-full">
-                  <div className="space-y-4">
+              {/* Step 2: Reason Code & Unseal Button */}
+              <div className="lg:col-span-5 space-y-6">
+                <div className="heal-card p-8 sm:p-9 space-y-6 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm flex flex-col justify-between h-full">
+                  <div className="space-y-5">
                     <div>
-                      <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">Step 2</span>
-                      <h3 className="text-base font-bold text-slate-900">Mandatory Reason Code</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Mandatory justification recorded on-chain for legal accountability
+                      <span className="text-xs font-bold text-[#BA3B3B] uppercase tracking-wider">Step 2</span>
+                      <h3 className="text-lg font-black text-[#2B2521] mt-0.5">Clinical Reason</h3>
+                      <p className="text-xs text-[#82786D] mt-1">
+                        Recorded on-chain for audit accountability
                       </p>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {[
                         'Trauma / Acute Incident',
                         'Cardiac Arrest / STEMI',
@@ -1215,10 +1182,10 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                       ].map(option => (
                         <label
                           key={option}
-                          className={`flex items-center gap-3 p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                          className={`flex items-center gap-3.5 p-3.5 rounded-2xl border text-xs cursor-pointer transition-all ${
                             reasonCode === option
-                              ? 'border-rose-500 bg-rose-50/60 font-bold text-rose-900'
-                              : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                              ? 'border-[#BA3B3B] bg-[#FDF6F5] font-bold text-[#962828]'
+                              : 'border-[#E8E1D5] hover:bg-[#FAF7F2] text-[#4F4740]'
                           }`}
                         >
                           <input
@@ -1227,7 +1194,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                             value={option}
                             checked={reasonCode === option}
                             onChange={() => setReasonCode(option)}
-                            className="text-rose-600 focus:ring-rose-500"
+                            className="text-[#BA3B3B] focus:ring-[#BA3B3B]"
                           />
                           <span>{option}</span>
                         </label>
@@ -1239,22 +1206,22 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                           placeholder="Specify emergency reason (required)..."
                           value={customReason}
                           onChange={e => setCustomReason(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-rose-500"
+                          className="w-full text-xs p-3 rounded-xl bg-[#FAF7F2] border border-[#E8E1D5] text-[#2B2521] focus:ring-2 focus:ring-[#BA3B3B] focus:outline-none"
                         />
                       )}
                     </div>
                   </div>
 
-                  {/* Action Button */}
-                  <div className="pt-4 border-t border-slate-100 space-y-2">
+                  {/* Big Unseal Action Button */}
+                  <div className="pt-6 border-t border-[#E8E1D5] space-y-3">
                     <button
                       type="button"
                       disabled={scanningState !== 'verified'}
                       onClick={handleExecuteEmergencyUnlock}
-                      className={`w-full py-4 px-4 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2 shadow-lg transition-all ${
+                      className={`w-full py-4 px-6 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2 shadow-lg transition-all ${
                         scanningState === 'verified'
-                          ? 'bg-rose-600 hover:bg-rose-700 active:scale-98 cursor-pointer ring-4 ring-rose-500/30 animate-pulse'
-                          : 'bg-slate-300 cursor-not-allowed opacity-70'
+                          ? 'bg-[#BA3B3B] hover:bg-[#A32A2A] active:scale-98 cursor-pointer ring-4 ring-[#BA3B3B]/20 animate-pulse'
+                          : 'bg-slate-300 cursor-not-allowed opacity-60'
                       }`}
                     >
                       <ShieldAlert className="w-5 h-5" />
@@ -1262,8 +1229,8 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                       <ArrowRight className="w-4 h-4" />
                     </button>
                     {scanningState !== 'verified' && (
-                      <p className="text-[11px] text-center text-slate-400">
-                        Scan or verify any single factor above to enable unseal button
+                      <p className="text-[11px] text-center text-[#82786D]">
+                        Verify face or factor above to enable unseal button
                       </p>
                     )}
                   </div>
@@ -1271,93 +1238,99 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
               </div>
             </div>
           ) : (
-            /* Unlocked Emergency Card View */
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="p-4 rounded-2xl bg-emerald-600 text-white flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-200" />
+            /* Unlocked Emergency Card View — Spacious & Elegant */
+            <div className="space-y-8 animate-in fade-in duration-200">
+              {/* Top Success Banner */}
+              <div className="p-6 rounded-3xl bg-[#2D6346] text-white flex flex-wrap items-center justify-between gap-4 shadow-md">
+                <div className="flex items-center gap-3.5">
+                  <div className="p-3 bg-white/15 rounded-2xl">
+                    <CheckCircle2 className="w-7 h-7 text-emerald-200" />
+                  </div>
                   <div>
-                    <h3 className="text-lg font-bold">Emergency Profile Successfully Unsealed</h3>
-                    <p className="text-xs text-emerald-100">
-                      On-chain transaction minted: <span className="font-mono">{lastEmergencyTx?.txHash.substring(0, 16)}...</span>
+                    <h3 className="text-lg font-black text-white">Emergency Profile Unsealed</h3>
+                    <p className="text-xs text-emerald-100/90 mt-0.5">
+                      On-chain transaction minted: <span className="font-mono text-emerald-200">{lastEmergencyTx?.txHash.substring(0, 16)}...</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <button
                     onClick={() => {
                       const el = document.getElementById('emergency-request-access-box');
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
+                    className="px-4 py-2 bg-white text-[#2B2521] hover:bg-[#FAF7F2] rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
                   >
-                    <KeyRound className="w-3.5 h-3.5" />
+                    <KeyRound className="w-3.5 h-3.5 text-[#C85A3B]" />
                     <span>Request Full Old Records</span>
                   </button>
+
                   <button
                     onClick={() => {
                       setEmergencyUnlocked(false);
                       setScanningState('idle');
                     }}
-                    className="px-3.5 py-1.5 bg-white text-slate-800 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
                     Reset & Reseal
                   </button>
+
                   <button
                     onClick={() => setActiveDoctorTab('consultation')}
-                    className="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-[#2B2521] hover:bg-[#3D352E] text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
                   >
                     Consultation Tab
                   </button>
                 </div>
               </div>
 
-              {/* Emergency Card Data */}
-              <div className="heal-card p-6 border-2 border-rose-300 shadow-xl space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
+              {/* Clean Spacious Emergency Profile Card */}
+              <div className="heal-card p-8 sm:p-10 bg-white rounded-3xl border border-[#E8E1D5] shadow-sm space-y-8">
+                {/* Header with Photo & Blood Group */}
+                <div className="flex flex-wrap items-center justify-between gap-6 pb-6 border-b border-[#E8E1D5]">
+                  <div className="flex items-center gap-5">
                     <img
                       src={liveScannedPhoto || searchedPatient.registeredBiometrics?.facePhotoUrl || searchedPatient.avatarUrl}
                       alt={searchedPatient.name}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-rose-500 shadow-md ring-2 ring-rose-300"
+                      className="w-20 h-20 rounded-3xl object-cover border-2 border-[#BA3B3B] shadow-md ring-4 ring-[#BA3B3B]/10"
                     />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-2xl font-black text-slate-900">{searchedPatient.name}</h2>
-                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-700">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-2xl font-black text-[#2B2521] tracking-tight">{searchedPatient.name}</h2>
+                        <span className="px-3 py-0.5 rounded-full text-xs font-bold bg-[#FDF2F0] text-[#BA3B3B] border border-[#F5C7C1]">
                           EMERGENCY SCOPE ONLY
                         </span>
                       </div>
-                      <div className="text-xs text-slate-500 font-mono mt-0.5">
+                      <div className="text-xs text-[#82786D] font-mono">
                         Health ID: {searchedPatient.healthId} · DOB: {searchedPatient.dob} ({searchedPatient.gender})
                       </div>
                     </div>
                   </div>
 
-                  {/* Blood Group */}
-                  <div className="flex items-center gap-3 px-5 py-3 bg-rose-50 border-2 border-rose-400 rounded-2xl text-rose-700">
-                    <Heart className="w-8 h-8 fill-rose-600 text-rose-600 animate-pulse" />
+                  {/* Clean Blood Group Pill */}
+                  <div className="flex items-center gap-4 px-6 py-4 bg-[#FDF2F0] border border-[#F5C7C1] rounded-3xl text-[#BA3B3B]">
+                    <Heart className="w-9 h-9 fill-[#BA3B3B] text-[#BA3B3B] animate-pulse" />
                     <div>
-                      <div className="text-xs font-bold uppercase text-rose-500">Blood Group</div>
-                      <div className="text-3xl font-black text-rose-700">{searchedPatient.emergencyProfile?.bloodGroup || 'O+'}</div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-[#962828]">Blood Group</div>
+                      <div className="text-3xl font-black text-[#BA3B3B]">{searchedPatient.emergencyProfile?.bloodGroup || 'O+'}</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Vital Profile Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Vitals & Meds Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Allergies */}
-                  <div className="p-5 rounded-2xl bg-rose-50 border border-rose-200 space-y-3">
-                    <div className="flex items-center gap-2 text-rose-900 font-bold text-sm">
-                      <AlertTriangle className="w-5 h-5 text-rose-600" />
+                  <div className="p-6 rounded-3xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-4">
+                    <div className="flex items-center gap-2 text-[#962828] font-bold text-sm">
+                      <AlertTriangle className="w-5 h-5 text-[#BA3B3B]" />
                       <span>High-Alert Allergies</span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2.5">
                       {(searchedPatient.emergencyProfile?.allergies?.length ? searchedPatient.emergencyProfile.allergies : ['No critical allergies documented']).map(allergy => (
                         <span
                           key={allergy}
-                          className="px-3 py-1.5 bg-white text-rose-800 font-black text-xs rounded-xl border border-rose-300 shadow-xs"
+                          className="px-4 py-2 bg-white text-[#962828] font-bold text-xs rounded-2xl border border-[#F5C7C1] shadow-xs"
                         >
                           ⚠️ {allergy}
                         </span>
@@ -1366,16 +1339,16 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                   </div>
 
                   {/* Critical Meds */}
-                  <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 space-y-3">
-                    <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
-                      <Activity className="w-5 h-5 text-amber-600" />
+                  <div className="p-6 rounded-3xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-4">
+                    <div className="flex items-center gap-2 text-[#7A402A] font-bold text-sm">
+                      <Activity className="w-5 h-5 text-[#C85A3B]" />
                       <span>Active Critical Medications</span>
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       {(searchedPatient.emergencyProfile?.criticalMeds?.length ? searchedPatient.emergencyProfile.criticalMeds : ['No critical daily medications recorded']).map(med => (
                         <div
                           key={med}
-                          className="p-2 bg-white text-amber-900 font-bold text-xs rounded-lg border border-amber-200"
+                          className="p-3 bg-white text-[#4F4740] font-semibold text-xs rounded-xl border border-[#E8E1D5]"
                         >
                           • {med}
                         </div>
@@ -1385,29 +1358,29 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                 </div>
 
                 {/* Emergency Contacts */}
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="p-6 rounded-3xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-blue-600" />
-                      <span>Emergency Contacts (SMS Dispatched)</span>
+                    <div className="font-bold text-[#2B2521] text-sm flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-[#C85A3B]" />
+                      <span>Emergency Contacts (SMS Push Dispatched)</span>
                     </div>
-                    <span className="text-xs text-emerald-600 font-semibold">✓ Automated Push Sent</span>
+                    <span className="text-xs text-[#2D6346] font-bold">✓ Automated Push Sent</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {(searchedPatient.emergencyProfile?.emergencyContacts?.length ? searchedPatient.emergencyProfile.emergencyContacts : [{ name: 'Primary Kin', relation: 'Family', phone: searchedPatient.phone || 'Emergency Services' }]).map(c => (
                       <div
                         key={c.phone}
-                        className="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between"
+                        className="p-4 bg-white rounded-2xl border border-[#E8E1D5] flex items-center justify-between shadow-2xs"
                       >
                         <div>
-                          <div className="font-bold text-slate-800 text-xs">
+                          <div className="font-bold text-[#2B2521] text-xs">
                             {c.name} ({c.relation})
                           </div>
-                          <div className="text-xs text-slate-500 font-mono">{c.phone}</div>
+                          <div className="text-xs text-[#82786D] font-mono mt-0.5">{c.phone}</div>
                         </div>
                         <a
                           href={`tel:${c.phone}`}
-                          className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs rounded-lg border border-emerald-200"
+                          className="px-3.5 py-1.5 bg-[#EDF5F0] hover:bg-[#E0EFE7] text-[#2D6346] font-bold text-xs rounded-xl border border-[#C4DFC5] transition-colors"
                         >
                           Call Now
                         </a>
@@ -1418,56 +1391,56 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
               </div>
 
               {/* Step 3: Request Full Medical Record Access to View Old EHR / Lab Tests */}
-              <div id="emergency-request-access-box" className="heal-card p-6 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl border border-indigo-500/30 shadow-2xl space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-indigo-500/20">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-indigo-600/30 border border-indigo-400/40 rounded-2xl">
-                      <KeyRound className="w-6 h-6 text-indigo-300" />
+              <div id="emergency-request-access-box" className="heal-card p-8 sm:p-10 bg-gradient-to-br from-[#241F1C] via-[#332A24] to-[#201B18] text-[#FAF7F2] rounded-3xl border border-[#3E352F] shadow-xl space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-white/10">
+                  <div className="flex items-center gap-3.5">
+                    <div className="p-3 bg-white/10 border border-white/15 rounded-2xl">
+                      <KeyRound className="w-6 h-6 text-[#F5C7B8]" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2.5">
                         <h3 className="text-lg font-black text-white tracking-tight">
                           Request Full Medical Records & Past EHR Access
                         </h3>
-                        <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-[10px] font-bold uppercase tracking-wider">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#C85A3B]/30 text-[#F5C7B8] border border-[#C85A3B]/40 text-[10px] font-bold uppercase tracking-wider">
                           Patient Consent Required
                         </span>
                       </div>
-                      <p className="text-xs text-indigo-200/80 mt-0.5">
-                        Emergency bypass granted minimum necessary emergency vitals only. Send an authorized request to {searchedPatient.name} to unseal all historical lab reports, past prescriptions, and diagnostic scans.
+                      <p className="text-xs text-[#D8CEBE] mt-0.5">
+                        Emergency bypass only unlocked vitals. Send an authorized request to {searchedPatient.name} to unseal all historical lab tests, past prescriptions, and scans.
                       </p>
                     </div>
                   </div>
 
                   {hasActiveConsent && (
-                    <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                    <span className="px-3.5 py-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 rounded-xl text-xs font-bold flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      <span>Full Access Granted by Patient ✓</span>
+                      <span>Full Access Granted ✓</span>
                     </span>
                   )}
                 </div>
 
                 {hasActiveConsent ? (
-                  <div className="p-5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-4">
+                  <div className="p-6 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-4">
                     <div className="space-y-1">
                       <h4 className="text-sm font-bold text-emerald-200">
                         ✓ Consent Active: You have authorized access to view all historical records!
                       </h4>
                       <p className="text-xs text-emerald-300/80">
-                        Scopes Authorized: {hospitalConsent?.scope.join(', ') || 'All Clinical EHR'}
+                        Scopes: {hospitalConsent?.scope.join(', ') || 'All Clinical EHR'}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setActiveDoctorTab('consultation')}
-                      className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg cursor-pointer flex items-center gap-2"
+                      className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg cursor-pointer flex items-center gap-2"
                     >
                       <FileText className="w-4 h-4" />
                       <span>Open Full Patient EHR & Lab Records →</span>
                     </button>
                   </div>
                 ) : pendingRequest ? (
-                  <div className="p-5 rounded-2xl bg-amber-950/40 border border-amber-500/30 space-y-3">
+                  <div className="p-6 rounded-2xl bg-amber-950/40 border border-amber-500/30 space-y-3">
                     <div className="flex items-center gap-3">
                       <Clock className="w-6 h-6 text-amber-400 animate-spin" />
                       <div>
@@ -1475,39 +1448,39 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                           Access Request Dispatched & Pending Patient Approval
                         </h4>
                         <p className="text-xs text-amber-300/80 mt-0.5">
-                          A real-time push notification was sent to {searchedPatient.name}. When the patient taps <strong>"Approve"</strong> in their portal, this terminal will automatically unlock their full historical records.
+                          A real-time prompt was sent to {searchedPatient.name}. When approved in their portal, this terminal will automatically unlock.
                         </p>
                       </div>
                     </div>
-                    <div className="pt-2 flex items-center gap-2">
-                      <span className="text-[11px] font-mono text-amber-400 bg-amber-900/40 px-2.5 py-1 rounded-lg border border-amber-700/50">
-                        Scopes Requested: {pendingRequest.requestedScope.join(', ')}
+                    <div className="pt-2">
+                      <span className="text-xs font-mono text-amber-300 bg-amber-900/40 px-3 py-1 rounded-xl border border-amber-700/50">
+                        Scopes: {pendingRequest.requestedScope.join(', ')}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-5">
                     {/* Clinical Justification */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-indigo-200 flex items-center justify-between">
-                        <span>Clinical Justification / Purpose of Request *</span>
-                        <span className="text-[11px] text-slate-400 font-normal">Recorded on-chain</span>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-[#F5C7B8] flex items-center justify-between">
+                        <span>Clinical Purpose of Request *</span>
+                        <span className="text-[11px] text-[#82786D] font-normal">Recorded on-chain</span>
                       </label>
                       <input
                         type="text"
                         value={requestReason}
                         onChange={e => setRequestReason(e.target.value)}
                         placeholder="e.g., Trauma post-incident evaluation and full cardiology history review"
-                        className="w-full text-xs p-3 rounded-xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        className="w-full text-xs p-3.5 rounded-xl bg-black/30 border border-white/15 text-white placeholder-[#82786D] focus:ring-2 focus:ring-[#C85A3B] focus:outline-none"
                       />
                     </div>
 
                     {/* Scopes Selection */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-indigo-200">
-                        Select Clinical Scopes to Request:
+                    <div className="space-y-2.5">
+                      <label className="text-xs font-bold text-[#F5C7B8]">
+                        Select Clinical Categories:
                       </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {(['Lab Reports', 'Rx History', 'Diagnostic Scans', 'Surgical Notes'] as ConsentScope[]).map(sc => {
                           const isChecked = requestedScopes.includes(sc);
                           return (
@@ -1521,14 +1494,14 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                                     : [...requestedScopes, sc]
                                 );
                               }}
-                              className={`p-2.5 rounded-xl border text-xs font-bold text-left transition-all cursor-pointer flex items-center justify-between ${
+                              className={`p-3 rounded-2xl border text-xs font-bold text-left transition-all cursor-pointer flex items-center justify-between ${
                                 isChecked
-                                  ? 'bg-indigo-600 border-indigo-400 text-white shadow-md'
-                                  : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-800'
+                                  ? 'bg-[#C85A3B] border-[#E8795A] text-white shadow-md'
+                                  : 'bg-black/20 border-white/15 text-[#D8CEBE] hover:bg-white/10'
                               }`}
                             >
                               <span>{sc}</span>
-                              {isChecked ? <Check className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-slate-500" />}
+                              {isChecked ? <Check className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#82786D]" />}
                             </button>
                           );
                         })}
@@ -1536,15 +1509,15 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                     </div>
 
                     {/* Action Button */}
-                    <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
-                      <p className="text-[11px] text-slate-400">
-                        Prompt will appear instantly in {searchedPatient.name}'s Patient Dashboard & Notification Drawer.
+                    <div className="pt-3 flex flex-wrap items-center justify-between gap-4">
+                      <p className="text-xs text-[#82786D]">
+                        Prompt will appear instantly in {searchedPatient.name}'s Patient Dashboard.
                       </p>
                       <button
                         type="button"
                         disabled={isSendingRequest || requestedScopes.length === 0}
                         onClick={handleSendAccessRequest}
-                        className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center gap-2"
+                        className="px-6 py-3.5 bg-[#C85A3B] hover:bg-[#B84E30] disabled:bg-slate-700 text-white rounded-2xl text-xs font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center gap-2"
                       >
                         {isSendingRequest ? (
                           <>
