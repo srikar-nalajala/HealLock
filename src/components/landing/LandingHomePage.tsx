@@ -196,106 +196,99 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f0f4f9] via-[#f8fafc] to-[#e2e8f0] text-slate-900 flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#2B2521] flex flex-col justify-between selection:bg-[#C85A3B] selection:text-white">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E8E1D5] shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-              <Shield className="w-5 h-5 fill-white text-blue-600" />
+            <div className="w-9 h-9 rounded-2xl bg-[#2B2521] flex items-center justify-center text-[#FAF7F2] shadow-xs border border-[#3E352F]">
+              <Shield className="w-5 h-5 fill-[#C85A3B] text-[#C85A3B]" />
             </div>
-            <div>
-              <span className="text-xl font-black text-slate-900 tracking-tight">HealLock</span>
-              <span className="hidden sm:inline-block ml-2 px-2.5 py-0.5 text-[10px] font-extrabold bg-blue-50 text-blue-700 rounded-full border border-blue-200">
-                Healthcare Security & Audit Platform
-              </span>
-            </div>
+            <span className="text-xl font-black text-[#2B2521] tracking-tight">HealLock</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold rounded-lg font-mono">
-              <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-              <span>Firebase Connected</span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#EDF5F0] text-[#2D6346] border border-[#C4DFC5] text-xs font-bold rounded-full">
+              <span className="w-2 h-2 rounded-full bg-[#2D6346] animate-pulse" />
+              <span>Sovereign Security Active</span>
             </span>
           </div>
         </div>
       </header>
 
       {/* Main Hero & Auth Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start flex-1">
-        {/* Left Column: Platform Narrative */}
-        <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span>AI Health Intelligence · Blockchain Audit · Cryptographic Control</span>
+      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center flex-1">
+        {/* Left Column: Clean Platform Narrative */}
+        <div className="lg:col-span-5 space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF7F2] border border-[#E8E1D5] text-[#C85A3B] text-xs font-bold shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#C85A3B]" />
+            <span>Private · Sovereign · Emergency Ready</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-[1.2]">
-            Real-Time Patient Health Records & Cryptographic Consent
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2B2521] tracking-tight leading-[1.15]">
+            Your Health Records, Truly in Your Hands.
           </h1>
 
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Create your account with complete clinical details or sign in to your role-specific dashboard. Every medical record is client-encrypted off-chain with AES-256 and immutably audited on the blockchain ledger.
+          <p className="text-[#63594F] text-sm sm:text-base leading-relaxed">
+            Patient-controlled medical identity and cryptographic audit ledger. Share only what you approve with doctors, with instant emergency bypass when every second counts.
           </p>
 
-          {/* 4 Core Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div className="p-3.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
-              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                1. Patient Control
-              </span>
-              <p className="text-[11px] text-slate-500">Granular consent scoping & 1-click revocation.</p>
+          {/* 3 Clean Minimal Pillars */}
+          <div className="space-y-3 pt-2">
+            <div className="p-4 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs flex items-center gap-3.5">
+              <div className="p-2.5 bg-[#EDF5F0] text-[#2D6346] rounded-xl shrink-0">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs text-[#2B2521]">1. Patient-Controlled Consent</h4>
+                <p className="text-xs text-[#82786D]">Granular scoping and 1-click revocation across all hospitals.</p>
+              </div>
             </div>
 
-            <div className="p-3.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
-              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
-                <Lock className="w-4 h-4 text-emerald-600 shrink-0" />
-                2. Minimum Necessary
-              </span>
-              <p className="text-[11px] text-slate-500">Emergency unseals vital card only.</p>
+            <div className="p-4 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs flex items-center gap-3.5">
+              <div className="p-2.5 bg-[#FDF2F0] text-[#BA3B3B] rounded-xl shrink-0">
+                <Lock className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs text-[#2B2521]">2. Emergency Multi-Factor Unlock</h4>
+                <p className="text-xs text-[#82786D]">Instant biometric or QR unsealing for critical life-saving vitals.</p>
+              </div>
             </div>
 
-            <div className="p-3.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
-              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
-                <Stethoscope className="w-4 h-4 text-indigo-600 shrink-0" />
-                3. Doctor Emergency
-              </span>
-              <p className="text-[11px] text-slate-500">QR / Face / Fingerprint single-factor unlock.</p>
-            </div>
-
-            <div className="p-3.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
-              <span className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-indigo-600 shrink-0" />
-                4. On-Chain Audit
-              </span>
-              <p className="text-[11px] text-slate-500">SHA-256 Merkle tree consensus verification.</p>
+            <div className="p-4 bg-white rounded-2xl border border-[#E8E1D5] shadow-xs flex items-center gap-3.5">
+              <div className="p-2.5 bg-[#FAF7F2] text-[#C85A3B] rounded-xl shrink-0 border border-[#E8DEC8]">
+                <Layers className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs text-[#2B2521]">3. Immutable Audit Ledger</h4>
+                <p className="text-xs text-[#82786D]">Every single doctor and hospital record access is recorded on-chain.</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Real-Time Comprehensive Registration & Login Form */}
+        {/* Right Column: Clean & Simple Sign In Card */}
         <div className="lg:col-span-7">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+          <div className="bg-white rounded-3xl p-7 sm:p-10 border border-[#E8E1D5] shadow-xl space-y-6">
             {/* Form Header Tabs */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E8E1D5]">
               <div>
-                <h2 className="text-xl font-black text-slate-900">
-                  {authMode === 'login' ? 'Sign In to HealLock' : 'Create Real Account'}
+                <h2 className="text-xl font-black text-[#2B2521]">
+                  {authMode === 'login' ? 'Sign In to Portal' : 'Create Account'}
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-[#82786D] mt-0.5">
                   {authMode === 'login'
-                    ? 'Enter your credentials to access your active portal'
-                    : 'Fill in your full clinical profile to initialize your on-chain health record'}
+                    ? 'Select your role and enter your credentials'
+                    : 'Fill in your details to initialize your sovereign health record'}
                 </p>
               </div>
 
-              <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-bold">
+              <div className="flex bg-[#FAF7F2] p-1 rounded-2xl border border-[#E8E1D5] text-xs font-bold">
                 <button
                   type="button"
                   onClick={() => setAuthMode('login')}
-                  className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
-                    authMode === 'login' ? 'bg-white text-blue-700 shadow-2xs font-extrabold' : 'text-slate-500 hover:text-slate-800'
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+                    authMode === 'login' ? 'bg-[#2B2521] text-white shadow-xs font-bold' : 'text-[#63594F] hover:text-[#2B2521]'
                   }`}
                 >
                   Sign In
@@ -303,8 +296,8 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                 <button
                   type="button"
                   onClick={() => setAuthMode('register')}
-                  className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
-                    authMode === 'register' ? 'bg-white text-blue-700 shadow-2xs font-extrabold' : 'text-slate-500 hover:text-slate-800'
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+                    authMode === 'register' ? 'bg-[#2B2521] text-white shadow-xs font-bold' : 'text-[#63594F] hover:text-[#2B2521]'
                   }`}
                 >
                   Register
@@ -312,88 +305,19 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
               </div>
             </div>
 
-            {/* Instant 1-Click Demo Role Switcher */}
-            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-slate-50 border border-blue-200/80 space-y-2">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="font-extrabold text-blue-900 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                  <span>Instant Demo 1-Click Access</span>
-                </span>
-                <span className="text-[10px] text-blue-600 font-mono">Pre-seeded Mock Data</span>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('patient')}
-                  className="px-2.5 py-1.5 bg-white hover:bg-blue-600 hover:text-white text-slate-700 rounded-lg border border-slate-200 text-[11px] font-bold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1 text-center"
-                >
-                  <User className="w-3 h-3 text-blue-600 shrink-0" />
-                  <span className="truncate">Patient</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('doctor')}
-                  className="px-2.5 py-1.5 bg-white hover:bg-indigo-600 hover:text-white text-slate-700 rounded-lg border border-slate-200 text-[11px] font-bold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1 text-center"
-                >
-                  <Stethoscope className="w-3 h-3 text-indigo-600 shrink-0" />
-                  <span className="truncate">Doctor</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('pharmacist')}
-                  className="px-2.5 py-1.5 bg-white hover:bg-teal-600 hover:text-white text-slate-700 rounded-lg border border-slate-200 text-[11px] font-bold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1 text-center"
-                >
-                  <Pill className="w-3 h-3 text-teal-600 shrink-0" />
-                  <span className="truncate">Pharmacist</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('admin')}
-                  className="px-2.5 py-1.5 bg-white hover:bg-slate-900 hover:text-white text-slate-700 rounded-lg border border-slate-200 text-[11px] font-bold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1 text-center"
-                >
-                  <ShieldCheck className="w-3 h-3 text-slate-700 shrink-0" />
-                  <span className="truncate">Admin</span>
-                </button>
-              </div>
-            </div>
-
             {/* Error Message */}
             {authError && (
-              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+              <div className="p-4 rounded-2xl bg-[#FDF2F0] border border-[#F5C7C1] text-[#962828] text-xs font-semibold">
                 {authError}
               </div>
             )}
 
-            {/* Hardware Biometrics Quick Sign-In Option in Login Mode */}
-            {authMode === 'login' && (
-              <div className="space-y-2 pt-1">
-                <button
-                  type="button"
-                  onClick={handleBiometricLogin}
-                  disabled={isLoading}
-                  className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 active:scale-98 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-md transition-all cursor-pointer"
-                >
-                  <Fingerprint className="w-4 h-4 text-amber-400" />
-                  <span>Sign In with Hardware Biometrics (Touch ID / Windows Hello / Passkey)</span>
-                </button>
-                <div className="flex items-center gap-2 text-slate-400 my-2">
-                  <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">or sign in with password</span>
-                  <div className="flex-1 h-px bg-slate-200" />
-                </div>
-              </div>
-            )}
-
-            {/* Role Selector */}
+            {/* Clean Role Selector (No cluttered truncated text) */}
             <div className="space-y-2">
-              <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">
-                Select Your Role
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <label className="text-xs font-bold text-[#63594F] uppercase tracking-wider">
+                Select Your Role:
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {roleConfigs.map(item => {
                   const Icon = item.icon;
                   const isSelected = selectedRole === item.role;
@@ -403,63 +327,59 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                       key={item.role}
                       type="button"
                       onClick={() => setSelectedRole(item.role)}
-                      className={`p-3 rounded-xl border-2 text-left transition-all flex flex-col justify-between cursor-pointer ${
+                      className={`p-3.5 rounded-2xl border-2 text-center transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer ${
                         isSelected
-                          ? `${item.accentColor} shadow-xs font-bold`
-                          : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100 text-slate-700'
+                          ? 'border-[#C85A3B] bg-[#FDF8F5] text-[#2B2521] shadow-xs font-black'
+                          : 'border-[#E8E1D5] bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] text-[#63594F]'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <Icon className={`w-4 h-4 ${isSelected ? 'text-current' : 'text-slate-500'}`} />
-                        {isSelected && <span className="w-2 h-2 rounded-full bg-blue-600" />}
-                      </div>
+                      <Icon className={`w-5 h-5 ${isSelected ? 'text-[#C85A3B]' : 'text-[#82786D]'}`} />
                       <div className="font-bold text-xs">{item.title}</div>
-                      <div className="text-[10px] text-slate-500 truncate mt-0.5">{item.desc}</div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Real-time Comprehensive Form */}
-            <form onSubmit={handleFormSubmit} className="space-y-5 text-xs">
+            {/* Real-time Clean Form */}
+            <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               {/* Common Account Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 {authMode === 'register' && (
-                  <div className="space-y-1 sm:col-span-2">
-                    <label className="font-bold text-slate-700">Full Legal Name *</label>
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-[#2B2521]">Full Legal Name *</label>
                     <input
                       type="text"
                       required
                       value={fullName}
                       onChange={e => setFullName(e.target.value)}
                       placeholder="e.g. Olivia Chen, Dr. Rajesh Sharma, MD"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-2xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold text-[#2B2521] placeholder-[#82786D] focus:ring-2 focus:ring-[#C85A3B] focus:outline-none"
                     />
                   </div>
                 )}
 
-                <div className="space-y-1 sm:col-span-2">
-                  <label className="font-bold text-slate-700">Email Address *</label>
+                <div className="space-y-1.5">
+                  <label className="font-bold text-[#2B2521]">Email Address *</label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="e.g. yourname@example.com"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-2xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold text-[#2B2521] placeholder-[#82786D] focus:ring-2 focus:ring-[#C85A3B] focus:outline-none"
                   />
                 </div>
 
-                <div className="space-y-1 sm:col-span-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="font-bold text-slate-700">Password *</label>
+                    <label className="font-bold text-[#2B2521]">Password *</label>
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-[11px] text-slate-400 hover:text-slate-600 flex items-center gap-1 cursor-pointer"
+                      className="text-xs text-[#82786D] hover:text-[#2B2521] flex items-center gap-1 cursor-pointer"
                     >
-                      {showPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                       <span>{showPassword ? 'Hide' : 'Show'}</span>
                     </button>
                   </div>
@@ -469,36 +389,36 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="Enter secure password (6+ characters)..."
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-2xl border border-[#E8E1D5] bg-[#FAF7F2] font-mono text-[#2B2521] placeholder-[#82786D] focus:ring-2 focus:ring-[#C85A3B] focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Patient Detailed Registration Section */}
               {authMode === 'register' && selectedRole === 'patient' && (
-                <div className="space-y-4 pt-3 border-t border-slate-100">
-                  <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <Heart className="w-4 h-4 text-rose-600" />
-                    <span>Patient Health & Emergency Profile Details</span>
+                <div className="space-y-4 pt-4 border-t border-[#E8E1D5]">
+                  <div className="font-bold text-[#2B2521] text-xs flex items-center gap-1.5">
+                    <Heart className="w-4 h-4 text-[#BA3B3B]" />
+                    <span>Patient Emergency Profile Details</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Date of Birth</label>
+                      <label className="font-bold text-[#63594F]">Date of Birth</label>
                       <input
                         type="date"
                         value={dob}
                         onChange={e => setDob(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] text-[#2B2521] font-semibold"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Gender</label>
+                      <label className="font-bold text-[#63594F]">Gender</label>
                       <select
                         value={gender}
                         onChange={e => setGender(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] text-[#2B2521] font-semibold"
                       >
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
@@ -508,11 +428,11 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                     </div>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Blood Group</label>
+                      <label className="font-bold text-[#63594F]">Blood Group</label>
                       <select
                         value={bloodGroup}
                         onChange={e => setBloodGroup(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-rose-300 bg-rose-50/50 font-black text-rose-700 focus:ring-2 focus:ring-rose-500"
+                        className="w-full px-3 py-2 rounded-xl border border-[#F5C7C1] bg-[#FDF2F0] font-black text-[#BA3B3B]"
                       >
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
@@ -526,53 +446,53 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                     </div>
 
                     <div className="space-y-1 sm:col-span-3">
-                      <label className="font-bold text-slate-700">Contact Phone Number</label>
+                      <label className="font-bold text-[#63594F]">Contact Phone Number</label>
                       <input
                         type="tel"
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
                         placeholder="+1 (555) 234-5678"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold"
                       />
                     </div>
                   </div>
 
                   {/* Emergency Contact */}
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-                    <div className="font-bold text-slate-800 flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Primary Emergency Contact (Notified in Level-1 Access)</span>
+                  <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8E1D5] space-y-3">
+                    <div className="font-bold text-[#2B2521] flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-[#C85A3B]" />
+                      <span>Primary Emergency Contact</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       <div className="space-y-1">
-                        <label className="text-[11px] font-semibold text-slate-600">Contact Name</label>
+                        <label className="text-[11px] font-semibold text-[#82786D]">Contact Name</label>
                         <input
                           type="text"
                           value={emergencyContactName}
                           onChange={e => setEmergencyContactName(e.target.value)}
                           placeholder="e.g. David Chen"
-                          className="w-full px-3 py-1.5 bg-white rounded-lg border border-slate-300 font-semibold"
+                          className="w-full px-3 py-1.5 bg-white rounded-lg border border-[#E8E1D5] font-semibold"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[11px] font-semibold text-slate-600">Relation</label>
+                        <label className="text-[11px] font-semibold text-[#82786D]">Relation</label>
                         <input
                           type="text"
                           value={emergencyContactRelation}
                           onChange={e => setEmergencyContactRelation(e.target.value)}
-                          placeholder="e.g. Spouse / Parent"
-                          className="w-full px-3 py-1.5 bg-white rounded-lg border border-slate-300 font-semibold"
+                          placeholder="e.g. Spouse"
+                          className="w-full px-3 py-1.5 bg-white rounded-lg border border-[#E8E1D5] font-semibold"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[11px] font-semibold text-slate-600">Phone</label>
+                        <label className="text-[11px] font-semibold text-[#82786D]">Phone</label>
                         <input
                           type="tel"
                           value={emergencyContactPhone}
                           onChange={e => setEmergencyContactPhone(e.target.value)}
                           placeholder="+1 (555) 892-3491"
-                          className="w-full px-3 py-1.5 bg-white rounded-lg border border-slate-300 font-semibold font-mono"
+                          className="w-full px-3 py-1.5 bg-white rounded-lg border border-[#E8E1D5] font-semibold font-mono"
                         />
                       </div>
                     </div>
@@ -581,179 +501,198 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                   {/* Allergies & Critical Meds */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="font-bold text-rose-700">Known Allergies (Comma-separated)</label>
+                      <label className="font-bold text-[#BA3B3B]">Known Allergies</label>
                       <input
                         type="text"
                         value={allergies}
                         onChange={e => setAllergies(e.target.value)}
-                        placeholder="e.g. Penicillin, Peanuts, Sulfa"
-                        className="w-full px-3.5 py-2 rounded-xl border border-rose-300 bg-rose-50/30 font-semibold"
+                        placeholder="e.g. Penicillin, Peanuts"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#F5C7C1] bg-[#FDF2F0] font-semibold text-[#2B2521]"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-amber-800">Critical Medications</label>
+                      <label className="font-bold text-[#7A402A]">Critical Medications</label>
                       <input
                         type="text"
                         value={criticalMeds}
                         onChange={e => setCriticalMeds(e.target.value)}
-                        placeholder="e.g. Lisinopril 10mg, Metformin"
-                        className="w-full px-3.5 py-2 rounded-xl border border-amber-300 bg-amber-50/30 font-semibold"
+                        placeholder="e.g. Lisinopril 10mg"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8DEC8] bg-[#FAF7F2] font-semibold text-[#2B2521]"
                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Doctor Detailed Registration Section */}
+              {/* Doctor Registration */}
               {authMode === 'register' && selectedRole === 'doctor' && (
-                <div className="space-y-3 pt-3 border-t border-slate-100">
-                  <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <Stethoscope className="w-4 h-4 text-indigo-600" />
-                    <span>Physician Credentials & Hospital Affiliation</span>
+                <div className="space-y-3 pt-3 border-t border-[#E8E1D5]">
+                  <div className="font-bold text-[#2B2521] text-xs flex items-center gap-1.5">
+                    <Stethoscope className="w-4 h-4 text-[#C85A3B]" />
+                    <span>Physician Credentials</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Medical License Number *</label>
+                      <label className="font-bold text-[#63594F]">Medical License Number *</label>
                       <input
                         type="text"
                         required
                         value={medicalLicense}
                         onChange={e => setMedicalLicense(e.target.value)}
                         placeholder="e.g. MD-84920-CA"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-mono font-semibold"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-mono font-semibold"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Hospital / Facility Name *</label>
+                      <label className="font-bold text-[#63594F]">Hospital / Facility Name *</label>
                       <input
                         type="text"
                         required
                         value={hospitalName}
                         onChange={e => setHospitalName(e.target.value)}
                         placeholder="e.g. City Care Hospital"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-semibold"
-                      />
-                    </div>
-
-                    <div className="space-y-1 sm:col-span-2">
-                      <label className="font-bold text-slate-700">Department / Specialization</label>
-                      <input
-                        type="text"
-                        value={department}
-                        onChange={e => setDepartment(e.target.value)}
-                        placeholder="e.g. Cardiology, Emergency Medicine"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-semibold"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold"
                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Pharmacist Detailed Registration Section */}
+              {/* Pharmacist Registration */}
               {authMode === 'register' && selectedRole === 'pharmacist' && (
-                <div className="space-y-3 pt-3 border-t border-slate-100">
-                  <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <Pill className="w-4 h-4 text-teal-600" />
-                    <span>Pharmacist Credentials & Pharmacy Details</span>
+                <div className="space-y-3 pt-3 border-t border-[#E8E1D5]">
+                  <div className="font-bold text-[#2B2521] text-xs flex items-center gap-1.5">
+                    <Pill className="w-4 h-4 text-[#2D6346]" />
+                    <span>Pharmacist Credentials</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Pharmacy License / Reg No *</label>
+                      <label className="font-bold text-[#63594F]">Pharmacy License *</label>
                       <input
                         type="text"
                         required
                         value={pharmacyLicense}
                         onChange={e => setPharmacyLicense(e.target.value)}
                         placeholder="e.g. RPH-94102"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-mono font-semibold"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-mono font-semibold"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Dispensary / Pharmacy Name *</label>
+                      <label className="font-bold text-[#63594F]">Dispensary Name *</label>
                       <input
                         type="text"
                         required
                         value={pharmacyName}
                         onChange={e => setPharmacyName(e.target.value)}
-                        placeholder="e.g. Metro Community Pharmacy"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-semibold"
+                        placeholder="e.g. Metro Pharmacy"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold"
                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Admin Detailed Registration Section */}
+              {/* Admin Registration */}
               {authMode === 'register' && selectedRole === 'admin' && (
-                <div className="space-y-3 pt-3 border-t border-slate-100">
-                  <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-slate-700" />
-                    <span>Hospital Administrator Credentials</span>
+                <div className="space-y-3 pt-3 border-t border-[#E8E1D5]">
+                  <div className="font-bold text-[#2B2521] text-xs flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#2B2521]" />
+                    <span>Administrator Clearance</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Admin Clearance ID *</label>
+                      <label className="font-bold text-[#63594F]">Admin Clearance ID *</label>
                       <input
                         type="text"
                         required
                         value={adminId}
                         onChange={e => setAdminId(e.target.value)}
                         placeholder="e.g. ADM-NODE-01"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-mono font-semibold"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-mono font-semibold"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-slate-700">Hospital Network Name *</label>
+                      <label className="font-bold text-[#63594F]">Hospital Network *</label>
                       <input
                         type="text"
                         required
                         value={hospitalName}
                         onChange={e => setHospitalName(e.target.value)}
-                        placeholder="e.g. City Care Hospital Network"
-                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 font-semibold"
+                        placeholder="e.g. City Care Network"
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#E8E1D5] bg-[#FAF7F2] font-semibold"
                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Submit Button */}
+              {/* Main Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer"
+                className="w-full py-4 px-6 bg-[#2B2521] hover:bg-[#3D352E] text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all active:scale-98 cursor-pointer mt-4"
               >
                 {isLoading ? (
-                  <span>Authenticating & Initializing Profile...</span>
+                  <span>Authenticating...</span>
                 ) : (
                   <>
-                    <span>{authMode === 'login' ? `Sign In as ${selectedRole.toUpperCase()}` : `Create & Register ${selectedRole.toUpperCase()} Account`}</span>
+                    <span>{authMode === 'login' ? `Sign In as ${selectedRole.toUpperCase()}` : `Create & Register Account`}</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
+
+              {/* Hardware Biometrics Button */}
+              {authMode === 'login' && (
+                <button
+                  type="button"
+                  onClick={handleBiometricLogin}
+                  disabled={isLoading}
+                  className="w-full py-3 px-4 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#2B2521] rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-[#E8E1D5] transition-all cursor-pointer"
+                >
+                  <Fingerprint className="w-4 h-4 text-[#C85A3B]" />
+                  <span>Sign In with Face / Fingerprint / Passkey</span>
+                </button>
+              )}
+
+              {/* Quick Demo 1-Click Pills */}
+              <div className="pt-2 text-center">
+                <p className="text-[11px] text-[#82786D] mb-2 font-medium">Quick 1-Click Demo Login:</p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {(['patient', 'doctor', 'pharmacist', 'admin'] as UserRole[]).map(role => (
+                    <button
+                      key={role}
+                      type="button"
+                      onClick={() => handleQuickDemoLogin(role)}
+                      className="px-3 py-1 bg-[#FAF7F2] hover:bg-[#EAE2D5] text-[#2B2521] rounded-xl border border-[#E8E1D5] text-[11px] font-bold transition-colors cursor-pointer capitalize"
+                    >
+                      {role}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </form>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500">
+      {/* Clean Footer */}
+      <footer className="bg-white border-t border-[#E8E1D5] py-4 px-6 text-center text-xs text-[#82786D]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800">HealLock Platform</span>
+            <span className="font-bold text-[#2B2521]">HealLock Platform</span>
             <span>·</span>
-            <span>Zero raw medical data on-chain · Client-side AES-256 field encryption</span>
+            <span>Client-side AES-256 encrypted · Sovereign on-chain ledger</span>
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">
-            Firebase Auth & Cloud Firestore
+          <span className="text-[11px] text-[#82786D] font-mono">
+            Powered by Supabase & WebAuthn
           </span>
         </div>
       </footer>
