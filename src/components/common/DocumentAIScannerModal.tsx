@@ -233,86 +233,86 @@ INTERPRETATION: Excellent 90-day glycemic regulation with zero evidence of diabe
     reader.readAsDataURL(file);
   };
 
-  const handleStartProcessing = () => {
+  const executeProcessing = async () => {
+    try {
+      const current = activeInputMode === 'presets' ? presets[selectedPreset] : {
+        title: documentTitle || 'Clinical Diagnostic Document',
+        category: documentCategory,
+        hospital: hospitalFacility,
+        doctor: attendingDoctor,
+        text: customDocumentText || presets.lipid.text,
+        extracted: {
+          values: {
+            'Document Title': documentTitle,
+            'Category': documentCategory,
+            'Hospital Node': hospitalFacility,
+            'Attending Clinician': attendingDoctor,
+            'OCR Confidence': '99.2%',
+            'Verification Status': 'Cryptographically Signed',
+          },
+          diagnoses: ['Verified Clinical Record', 'Structured LOINC Mapping Complete'],
+          summary: `Document AI successfully tokenized and extracted entities for ${documentTitle} with 99.2% accuracy.`,
+          confidenceScore: 0.992,
+        },
+      };
+
+      const recordId = 'rec-' + Math.random().toString(36).substring(2, 8);
+      const newRecord: MedicalRecord = {
+        id: recordId,
+        patientId: patient?.id || 'p-101',
+        category: current.category,
+        title: current.title,
+        date: new Date().toISOString().split('T')[0],
+        hospitalName: current.hospital,
+        doctorName: current.doctor,
+        fileType: capturedPhotoUrl ? 'Image / AI OCR Scan' : 'PDF / AI OCR Analyzed',
+        fileSize: '48.2 KB',
+        sha256Hash: 'sha256_' + Math.random().toString(36).substring(2, 14),
+        isEncrypted: true,
+        contentEncrypted: 'U2FsdGVkX1+98Kx2Wv83' + Math.random().toString(36) + '...[AES-256 GCM 256-bit Encrypted]',
+        aiExtractedFields: current.extracted,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Background log
+      try {
+        const event = await blockchainService.logEvent({
+          patientId: patient?.id || 'p-101',
+          patientName: patient?.name || 'Patient',
+          hospitalId: 'HOSP-CITYCARE-84910',
+          hospitalName: current.hospital,
+          staffId: 'staff-apex-421',
+          staffName: current.doctor,
+          staffRole: 'Diagnostic Specialist',
+          accessType: 'normal',
+          action: `Uploaded & Analyzed ${current.title} (Document AI OCR)`,
+          reason: 'Automated OCR & structured EHR sync',
+        });
+
+        await firebasePatientService.saveMedicalRecord(patient?.id || 'p-101', newRecord);
+        await firebasePatientService.saveAccessEvent(event);
+      } catch (err) {
+        console.warn('[DocumentAIScanner] background log fallback:', err);
+      }
+
+      setGeneratedRecord(newRecord);
+      onRecordCreated?.(newRecord);
+    } catch (err) {
+      console.error('[DocumentAIScanner] error:', err);
+    } finally {
+      setScanStep('done');
+      confetti({ particleCount: 45, spread: 70 });
+    }
+  };
+
+  const handleStartProcessing = async () => {
     setScanStep('ocr');
-    setTimeout(() => {
-      setScanStep('extracting');
-      setTimeout(() => {
-        setScanStep('encrypted');
-        setTimeout(async () => {
-          try {
-            const current = activeInputMode === 'presets' ? presets[selectedPreset] : {
-              title: documentTitle || 'Clinical Diagnostic Document',
-              category: documentCategory,
-              hospital: hospitalFacility,
-              doctor: attendingDoctor,
-              text: customDocumentText || presets.lipid.text,
-              extracted: {
-                values: {
-                  'Document Title': documentTitle,
-                  'Category': documentCategory,
-                  'Hospital Node': hospitalFacility,
-                  'Attending Clinician': attendingDoctor,
-                  'OCR Confidence': '99.2%',
-                  'Verification Status': 'Cryptographically Signed',
-                },
-                diagnoses: ['Verified Clinical Record', 'Structured LOINC Mapping Complete'],
-                summary: `Document AI successfully tokenized and extracted entities for ${documentTitle} with 99.2% accuracy.`,
-                confidenceScore: 0.992,
-              },
-            };
-
-            const recordId = 'rec-' + Math.random().toString(36).substring(2, 8);
-            const newRecord: MedicalRecord = {
-              id: recordId,
-              patientId: patient?.id || 'p-101',
-              category: current.category,
-              title: current.title,
-              date: new Date().toISOString().split('T')[0],
-              hospitalName: current.hospital,
-              doctorName: current.doctor,
-              fileType: capturedPhotoUrl ? 'Image / AI OCR Scan' : 'PDF / AI OCR Analyzed',
-              fileSize: '48.2 KB',
-              sha256Hash: 'sha256_' + Math.random().toString(36).substring(2, 14),
-              isEncrypted: true,
-              contentEncrypted: 'U2FsdGVkX1+98Kx2Wv83' + Math.random().toString(36) + '...[AES-256 GCM 256-bit Encrypted]',
-              aiExtractedFields: current.extracted,
-              createdAt: new Date().toISOString(),
-            };
-
-            // Log event safely
-            try {
-              const event = await blockchainService.logEvent({
-                patientId: patient?.id || 'p-101',
-                patientName: patient?.name || 'Patient',
-                hospitalId: 'HOSP-CITYCARE-84910',
-                hospitalName: current.hospital,
-                staffId: 'staff-apex-421',
-                staffName: current.doctor,
-                staffRole: 'Diagnostic Specialist',
-                accessType: 'normal',
-                action: `Uploaded & Analyzed ${current.title} (Document AI OCR)`,
-                reason: 'Automated OCR & structured EHR sync',
-              });
-
-              await firebasePatientService.saveMedicalRecord(patient?.id || 'p-101', newRecord);
-              await firebasePatientService.saveAccessEvent(event);
-            } catch (err) {
-              console.warn('[DocumentAIScanner] Storage/Blockchain background log fallback:', err);
-            }
-
-            setGeneratedRecord(newRecord);
-            onRecordCreated?.(newRecord);
-          } catch (err) {
-            console.error('[DocumentAIScanner] Extraction error:', err);
-          } finally {
-            // Guarantee completion to prevent infinite loading
-            setScanStep('done');
-            confetti({ particleCount: 45, spread: 70 });
-          }
-        }, 700);
-      }, 700);
-    }, 600);
+    await new Promise(r => setTimeout(r, 400));
+    setScanStep('extracting');
+    await new Promise(r => setTimeout(r, 400));
+    setScanStep('encrypted');
+    await new Promise(r => setTimeout(r, 400));
+    await executeProcessing();
   };
 
   const resetScanner = () => {
@@ -617,6 +617,14 @@ INTERPRETATION: Excellent 90-day glycemic regulation with zero evidence of diabe
                   {scanStep === 'encrypted' && 'Off-chain encryption complete. Verified block anchored to ledger.'}
                 </p>
               </div>
+
+              <button
+                type="button"
+                onClick={executeProcessing}
+                className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-[11px] font-mono border border-white/20 transition-all cursor-pointer"
+              >
+                Skip Animation & View Result →
+              </button>
             </div>
           )}
 
