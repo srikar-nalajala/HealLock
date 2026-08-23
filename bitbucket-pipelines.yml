@@ -1,0 +1,13 @@
+image: node:20
+
+pipelines:
+  default:
+    - step:
+        name: Build and Test HealLock
+        caches:
+          - node
+        script:
+          - npm ci || npm install
+          - npx tsc -b
+          - npm run build
+          - npx tsx test-all-functions.ts

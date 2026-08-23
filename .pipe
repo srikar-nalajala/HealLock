@@ -1,0 +1,42 @@
+# =============================================================================
+# HealLock Sovereign Identity & Clinical Ledger - CI/CD Pipeline Specification
+# =============================================================================
+
+version: "2.0"
+pipeline_id: "heallock-production-pipeline"
+name: "HealLock Build, Test & Sovereign Deployment Pipeline"
+
+environment:
+  node_version: "20.x"
+  package_manager: "npm"
+  target_platform: "vercel"
+  live_url: "https://heal-lock-eight.vercel.app"
+  repository: "https://github.com/srikar-nalajala/HealLock.git"
+
+stages:
+  # Stage 1: Dependency Resolution & Environment Verification
+  - stage: "setup"
+    name: "Install Dependencies"
+    commands:
+      - npm ci || npm install
+
+  # Stage 2: Static Analysis & TypeScript Compilation
+  - stage: "verify"
+    name: "Type Check & Static Lint"
+    commands:
+      - npx tsc -b
+      - npm run build
+
+  # Stage 3: Neural Biometric & Cryptographic Ledger Integrity Test
+  - stage: "test"
+    name: "Execute System Integrity Suite"
+    commands:
+      - npx tsx test-all-functions.ts
+
+  # Stage 4: Production Deployment Pipeline
+  - stage: "deploy"
+    name: "Deploy to Production"
+    branch: "main"
+    deployment_target: "vercel"
+    post_deploy_checks:
+      - "GET https://heal-lock-eight.vercel.app -> 200 OK"

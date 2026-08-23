@@ -1,0 +1,21 @@
+image: node:20
+
+stages:
+  - build
+  - test
+
+build_job:
+  stage: build
+  script:
+    - npm ci || npm install
+    - npx tsc -b
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+
+test_job:
+  stage: test
+  script:
+    - npm ci || npm install
+    - npx tsx test-all-functions.ts
