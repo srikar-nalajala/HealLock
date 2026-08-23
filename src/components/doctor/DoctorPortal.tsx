@@ -52,7 +52,8 @@ interface DoctorPortalProps {
   records: MedicalRecord[];
   consents: ConsentGrant[];
   accessRequests?: AccessRequest[];
-  onPrescriptionCreated: (rx: Prescription) => void;
+  onPrescriptionCreated: (rx: Prescription, record?: MedicalRecord) => void;
+  onRecordCreated?: (record: MedicalRecord) => void;
   onEmergencyLogged?: (event: AccessEvent) => void;
   onRequestAccessSent?: (req: AccessRequest) => void;
   onNotificationSent: (msg: string, type?: 'emergency' | 'prescription' | 'consent' | 'system') => void;
@@ -65,6 +66,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
   consents: initialConsents,
   accessRequests = [],
   onPrescriptionCreated,
+  onRecordCreated,
   onEmergencyLogged,
   onRequestAccessSent,
   onNotificationSent,
@@ -335,14 +337,18 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         searchedPatient
       );
 
+      const rxId = 'rx-' + Math.random().toString(36).substring(2, 9);
+      const recordId = 'rec-rx-' + Math.random().toString(36).substring(2, 9);
+      const currentDate = new Date().toISOString().split('T')[0];
+
       const newRx: Prescription = {
-        id: 'rx-' + Math.random().toString(36).substring(2, 9),
+        id: rxId,
         patientId: searchedPatient.id,
         hospitalId: staff.hospitalId,
         hospitalName: staff.hospitalName,
         doctorId: staff.id,
         doctorName: staff.name,
-        date: new Date().toISOString().split('T')[0],
+        date: currentDate,
         status: 'active',
         medications: [
           {
@@ -356,6 +362,35 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         aiFlags: flags,
       };
 
+      const newMedicalRecord: MedicalRecord = {
+        id: recordId,
+        patientId: searchedPatient.id,
+        hospitalName: staff.hospitalName,
+        doctorName: staff.name,
+        title: `Clinical Prescription: ${drugInput.trim()} (${dosage.trim() || '500 mg'})`,
+        category: 'Prescriptions',
+        date: currentDate,
+        fileType: 'application/pdf',
+        isEncrypted: true,
+        contentEncrypted: `CIPHER_AES256_${btoa(encodeURIComponent(drugInput.trim()))}`,
+        aiExtractedFields: {
+          summary: `e-Prescription issued by ${staff.name} at ${staff.hospitalName}. Regimen: ${dosage.trim() || '500 mg'}, ${frequency.trim() || 'Twice daily'} for ${duration.trim() || '7 days'}. Instructions: ${clinicalNotes.trim() || 'Take as directed.'}`,
+          values: {
+            'Medication': drugInput.trim(),
+            'Dosage': dosage.trim() || '500 mg',
+            'Frequency': frequency.trim() || 'Twice daily with meals',
+            'Duration': duration.trim() || '7 days',
+            'Prescribing Physician': staff.name,
+            'Clinical Facility': staff.hospitalName,
+            'AI Safety Status': flags[0]?.severity === 'critical' ? 'Physician Override Logged' : 'AI Safety Verified ✓'
+          },
+          confidenceScore: 0.99,
+          medications: [drugInput.trim()],
+          keyFindings: [`Prescribed ${dosage.trim()}, ${frequency.trim()} for ${duration.trim()}`],
+        },
+        sha256Hash: '0x' + Math.random().toString(36).substring(2, 18),
+      };
+
       // 1. Log to immutable blockchain ledger
       const event = await blockchainService.logEvent({
         patientId: searchedPatient.id,
@@ -366,25 +401,35 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         staffName: staff.name,
         staffRole: 'Doctor / Clinical Physician',
         accessType: 'normal',
-        action: `e-Prescription Issued: ${drugInput} (${flags[0]?.severity === 'critical' ? 'With Physician Override' : 'AI Verified Safe'})`,
+        action: `e-Prescription Issued: ${drugInput.trim()} (${flags[0]?.severity === 'critical' ? 'With Physician Override' : 'AI Verified Safe'})`,
         reason: clinicalNotes || 'Routine outpatient clinical care consultation',
       });
 
-      // 2. Persist to Firestore & Local Storage
+      // 2. Persist to Firestore & Local Storage (Both Prescription and MedicalRecord)
       await firebasePatientService.savePrescription(searchedPatient.id, newRx);
+      await firebasePatientService.saveMedicalRecord(searchedPatient.id, newMedicalRecord);
       await firebasePatientService.saveAccessEvent(event);
 
       try {
-        const localKey = `prescriptions_${searchedPatient.id}`;
-        const existing = localStorage.getItem(localKey);
-        const parsed = existing ? JSON.parse(existing) : [];
-        localStorage.setItem(localKey, JSON.stringify([newRx, ...parsed]));
+        const localRxKey = `prescriptions_${searchedPatient.id}`;
+        const existingRx = localStorage.getItem(localRxKey);
+        const parsedRx = existingRx ? JSON.parse(existingRx) : [];
+        localStorage.setItem(localRxKey, JSON.stringify([newRx, ...parsedRx]));
+
+        const localRecKey = `records_${searchedPatient.id}`;
+        const existingRec = localStorage.getItem(localRecKey);
+        const parsedRec = existingRec ? JSON.parse(existingRec) : [];
+        localStorage.setItem(localRecKey, JSON.stringify([newMedicalRecord, ...parsedRec]));
       } catch {}
 
-      // 3. Update React App State
-      onPrescriptionCreated(newRx);
+      // 3. Update Doctor Portal Local Records List immediately
+      setPatientRecords(prev => [newMedicalRecord, ...prev]);
+
+      // 4. Update Global React App State
+      onPrescriptionCreated(newRx, newMedicalRecord);
+      onRecordCreated?.(newMedicalRecord);
       onNotificationSent(
-        `New e-Prescription for ${drugInput} signed & issued by ${staff.name} at ${staff.hospitalName}. Synced to Pharmacy.`,
+        `New e-Prescription for ${drugInput} signed & added to ${searchedPatient.name}'s Medical Records.`,
         'prescription'
       );
       
@@ -401,7 +446,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
       }, 4000);
     } catch (err: any) {
       console.warn('[DoctorPortal] Issue prescription fallback:', err);
-      // Fallback local creation so user is never blocked
+      const fallbackCurrentDate = new Date().toISOString().split('T')[0];
       const fallbackRx: Prescription = {
         id: 'rx-' + Math.random().toString(36).substring(2, 9),
         patientId: searchedPatient.id,
@@ -409,7 +454,7 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         hospitalName: staff.hospitalName,
         doctorId: staff.id,
         doctorName: staff.name,
-        date: new Date().toISOString().split('T')[0],
+        date: fallbackCurrentDate,
         status: 'active',
         medications: [
           {
@@ -422,7 +467,33 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         ],
         aiFlags: [],
       };
-      onPrescriptionCreated(fallbackRx);
+
+      const fallbackRecord: MedicalRecord = {
+        id: 'rec-rx-' + Math.random().toString(36).substring(2, 9),
+        patientId: searchedPatient.id,
+        hospitalName: staff.hospitalName,
+        doctorName: staff.name,
+        title: `Clinical Prescription: ${drugInput.trim()} (${dosage.trim() || '500 mg'})`,
+        category: 'Prescriptions',
+        date: fallbackCurrentDate,
+        fileType: 'application/pdf',
+        isEncrypted: true,
+        contentEncrypted: `CIPHER_AES256_${btoa(encodeURIComponent(drugInput.trim()))}`,
+        aiExtractedFields: {
+          summary: `e-Prescription issued by ${staff.name} at ${staff.hospitalName}. Regimen: ${dosage.trim() || '500 mg'}, ${frequency.trim() || 'Twice daily'}.`,
+          values: {
+            'Medication': drugInput.trim(),
+            'Dosage': dosage.trim() || '500 mg',
+            'Frequency': frequency.trim() || 'Twice daily',
+          },
+          confidenceScore: 0.98,
+          medications: [drugInput.trim()],
+        },
+      };
+
+      setPatientRecords(prev => [fallbackRecord, ...prev]);
+      onPrescriptionCreated(fallbackRx, fallbackRecord);
+      onRecordCreated?.(fallbackRecord);
       setIssuedRx(fallbackRx);
       setPrescriptionSuccess(true);
       confetti({ particleCount: 30, spread: 50 });

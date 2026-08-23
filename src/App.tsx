@@ -368,8 +368,11 @@ export function App() {
     setAccessEvents(prev => [event, ...prev]);
   };
 
-  const handlePrescriptionCreated = (rx: Prescription) => {
+  const handlePrescriptionCreated = (rx: Prescription, record?: MedicalRecord) => {
     setPrescriptions(prev => [rx, ...prev]);
+    if (record) {
+      setRecords(prev => [record, ...prev]);
+    }
   };
 
   const handleRecordCreated = (rec: MedicalRecord) => {
@@ -549,6 +552,7 @@ export function App() {
               consents={consents}
               accessRequests={accessRequests}
               onPrescriptionCreated={handlePrescriptionCreated}
+              onRecordCreated={handleRecordCreated}
               onEmergencyLogged={handleEmergencyLogged}
               onRequestAccessSent={req => setAccessRequests(prev => [req, ...prev])}
               onNotificationSent={(msg, type) => addNotification(msg, type || 'prescription')}
