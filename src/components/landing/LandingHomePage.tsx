@@ -27,6 +27,7 @@ import {
 import { UserRole } from '../../types';
 import { authService, AuthUser, DetailedRegistrationData, REGISTERED_HOSPITALS_CREDENTIALS, RegisteredHospitalCredential } from '../../services/authService';
 import { INITIAL_PATIENT } from '../../services/mockData';
+import { FaceLoginModal } from './FaceLoginModal';
 import confetti from 'canvas-confetti';
 
 interface LandingHomePageProps {
@@ -38,6 +39,7 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
 }) => {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [selectedRole, setSelectedRole] = useState<UserRole>('patient');
+  const [isFaceLoginOpen, setIsFaceLoginOpen] = useState(false);
   
   // Basic Fields
   const [email, setEmail] = useState('');
@@ -727,17 +729,29 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
                 )}
               </button>
 
-              {/* Hardware Biometrics Button */}
+              {/* Real 3D Face Recognition & Hardware Biometric Login */}
               {authMode === 'login' && (
-                <button
-                  type="button"
-                  onClick={handleBiometricLogin}
-                  disabled={isLoading}
-                  className="w-full py-3 px-4 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#2B2521] rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-[#E8E1D5] transition-all cursor-pointer"
-                >
-                  <Fingerprint className="w-4 h-4 text-[#C85A3B]" />
-                  <span>Sign In with Face / Fingerprint / Passkey</span>
-                </button>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsFaceLoginOpen(true)}
+                    disabled={isLoading}
+                    className="w-full py-3 px-4 bg-[#FAF7F2] hover:bg-[#F3EFE6] text-[#2B2521] rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-[#E8DEC8] hover:border-[#C85A3B] transition-all cursor-pointer shadow-2xs group"
+                  >
+                    <ScanFace className="w-4 h-4 text-[#C85A3B] group-hover:scale-110 transition-transform" />
+                    <span>Sign In with 3D Face Recognition (128D FaceNet)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleBiometricLogin}
+                    disabled={isLoading}
+                    className="w-full py-2.5 px-4 bg-white hover:bg-[#FAF7F2] text-[#63594F] rounded-2xl font-medium text-xs flex items-center justify-center gap-1.5 border border-[#E8E1D5] transition-all cursor-pointer"
+                  >
+                    <Fingerprint className="w-3.5 h-3.5 text-[#2D6346]" />
+                    <span>Or Platform Fingerprint / FIDO2 Passkey</span>
+                  </button>
+                </div>
               )}
 
               {/* Quick Demo 1-Click Pills */}
@@ -760,6 +774,13 @@ export const LandingHomePage: React.FC<LandingHomePageProps> = ({
           </div>
         </div>
       </main>
+
+      {/* Real-time 3D Face Recognition Login Modal */}
+      <FaceLoginModal
+        isOpen={isFaceLoginOpen}
+        onClose={() => setIsFaceLoginOpen(false)}
+        onLoginSuccess={onLoginSuccess}
+      />
 
       {/* Clean Footer */}
       <footer className="bg-white border-t border-[#E8E1D5] py-4 px-6 text-center text-xs text-[#82786D]">

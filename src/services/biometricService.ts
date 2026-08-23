@@ -52,8 +52,8 @@ export type FingerprintStatus = 'idle' | 'scanning' | 'VERIFIED' | 'FAILED' | 'U
 class BiometricService {
   private modelsLoaded: boolean = false;
   private modelLoadPromise: Promise<void> | null = null;
-  public readonly FACE_DISTANCE_THRESHOLD = 0.45; // Strict 128D Euclidean threshold (<= 0.45 = MATCH)
-  public readonly FACE_COSINE_THRESHOLD = 0.88; // Strict Cosine alignment threshold (>= 0.88 = MATCH)
+  public readonly FACE_DISTANCE_THRESHOLD = 0.40; // Strict 128D Euclidean cutoff (<= 0.40 = MATCH)
+  public readonly FACE_COSINE_THRESHOLD = 0.90; // Strict Cosine alignment cutoff (>= 0.90 = MATCH)
 
   constructor() {
     // Lazy model loading init
@@ -270,8 +270,8 @@ class BiometricService {
     enrolledFeatures?: number[],
     enrolledTemplateRef?: string
   ): BiometricMatchResult {
-    // 1. Reject if no registered template exists
-    if (!enrolledFeatures || enrolledFeatures.length === 0) {
+    // 1. Reject if no registered template exists or incomplete vector
+    if (!enrolledFeatures || !Array.isArray(enrolledFeatures) || enrolledFeatures.length !== 128 || !enrolledFeatures.some(v => Math.abs(v) > 0.0001)) {
       return {
         matched: false,
         similarity: 0,
@@ -280,11 +280,11 @@ class BiometricService {
         threshold: this.FACE_DISTANCE_THRESHOLD,
         verificationFactor: 'face',
         status: 'NOT_REGISTERED',
-        details: 'Face not registered for this patient. Please enroll face biometrics first in Settings.',
+        details: 'Face biometrics not enrolled for this patient (no 128D neural template found). Please enroll face first in Settings.',
       };
     }
 
-    if (!liveFeatures || liveFeatures.length === 0) {
+    if (!liveFeatures || !Array.isArray(liveFeatures) || liveFeatures.length !== 128 || !liveFeatures.some(v => Math.abs(v) > 0.0001)) {
       return {
         matched: false,
         similarity: 0,
@@ -293,7 +293,7 @@ class BiometricService {
         threshold: this.FACE_DISTANCE_THRESHOLD,
         verificationFactor: 'face',
         status: 'FAILED',
-        details: 'No live face detected in camera stream. Please align face inside the scanner.',
+        details: 'Invalid or incomplete live face vector captured. Please align face steadily in front of the camera.',
       };
     }
 
@@ -303,8 +303,7 @@ class BiometricService {
 
     let sumSq = 0;
     let dotProduct = 0;
-    const minLen = Math.min(normLive.length, normEnrolled.length);
-    for (let i = 0; i < minLen; i++) {
+    for (let i = 0; i < 128; i++) {
       const diff = normLive[i] - normEnrolled[i];
       sumSq += diff * diff;
       dotProduct += normLive[i] * normEnrolled[i];
@@ -314,10 +313,10 @@ class BiometricService {
     const cosineSim = Math.max(0, Math.min(1, dotProduct));
 
     // Confidence percentage derived from Euclidean distance
-    // In L2-normalized FaceNet: distance 0.0 = 100%, 0.45 (threshold) = ~85%, >= 0.70 = < 20%
-    const confidenceScore = parseFloat(Math.max(0, Math.min(99.9, (1 - euclideanDistance / 0.85) * 100)).toFixed(1));
+    // In L2-normalized FaceNet: distance 0.0 = 100%, 0.40 (threshold) = ~88%, >= 0.70 = < 15%
+    const confidenceScore = parseFloat(Math.max(0, Math.min(99.9, (1 - euclideanDistance / 0.80) * 100)).toFixed(1));
     
-    // Strict Dual Requirement: Distance <= 0.45 AND Cosine Similarity >= 0.88
+    // Ultra-Strict Dual Requirement: Distance <= 0.40 AND Cosine Similarity >= 0.90
     const matched = euclideanDistance <= this.FACE_DISTANCE_THRESHOLD && cosineSim >= this.FACE_COSINE_THRESHOLD;
 
     return {
@@ -337,6 +336,7 @@ class BiometricService {
   /**
    * 1-to-N Biometric Identification Search
    * Scans live face and strictly searches all candidate patients to identify who the patient is.
+   * Rejects any random face that does not match an enrolled patient with d <= 0.40 and cos >= 0.90.
    */
   public identifyPatientByFace(
     liveFeatures: number[],
@@ -359,7 +359,8 @@ class BiometricService {
       if (
         patient.registeredBiometrics &&
         patient.registeredBiometrics.faceFeatures &&
-        patient.registeredBiometrics.faceFeatures.length > 0
+        Array.isArray(patient.registeredBiometrics.faceFeatures) &&
+        patient.registeredBiometrics.faceFeatures.length === 128
       ) {
         const result = this.verifyFaceMatch(
           liveFeatures,

@@ -7,6 +7,7 @@ import { auth } from './firebase';
 import { UserRole, Patient, Staff, EmergencyProfile } from '../types';
 import { INITIAL_PATIENT, INITIAL_STAFF } from './mockData';
 import { biometricService } from './biometricService';
+import { supabaseService } from './supabaseService';
 
 export interface AuthUser {
   uid: string;
@@ -321,28 +322,92 @@ class AuthService {
   }
 
   /**
+   * Update Biometric Profile for a Registered Patient
+   */
+  public updateUserBiometrics(patientId: string, updatedBiometrics: Patient['registeredBiometrics']) {
+    try {
+      const accounts = this.getRegisteredAccounts();
+      for (const email in accounts) {
+        if (accounts[email].patientData && accounts[email].patientData?.id === patientId) {
+          accounts[email].patientData!.registeredBiometrics = updatedBiometrics;
+          if (updatedBiometrics.facePhotoUrl) {
+            accounts[email].patientData!.avatarUrl = updatedBiometrics.facePhotoUrl;
+            accounts[email].photoURL = updatedBiometrics.facePhotoUrl;
+          }
+        }
+      }
+      localStorage.setItem('heallock_registered_accounts', JSON.stringify(accounts));
+      if (this.currentUser?.patientData && this.currentUser.patientData.id === patientId) {
+        this.currentUser.patientData.registeredBiometrics = updatedBiometrics;
+        if (updatedBiometrics.facePhotoUrl) {
+          this.currentUser.patientData.avatarUrl = updatedBiometrics.facePhotoUrl;
+          this.currentUser.photoURL = updatedBiometrics.facePhotoUrl;
+        }
+        this.notify();
+      }
+    } catch (e) {
+      console.warn('[AuthService] Update biometrics local fallback:', e);
+    }
+  }
+
+  /**
    * Face Recognition Liveness Login (Direct Face Vector Authentication)
-   * Strictly matches live vector against enrolled registered accounts (d <= 0.45, cos >= 0.88)
+   * Strictly matches live vector against enrolled registered accounts (d <= 0.40, cos >= 0.90)
+   * ZERO FALLBACK: Unregistered or non-matching faces are strictly rejected!
    */
   public async loginWithFaceFeatures(faceFeatures: number[]): Promise<AuthUser> {
+    if (!faceFeatures || faceFeatures.length !== 128) {
+      throw new Error('Invalid face vector captured. Please position your face clearly in the camera view.');
+    }
+
     const accounts = this.getRegisteredAccounts();
     const accountList = Object.values(accounts);
 
     let bestMatch: AuthUser | null = null;
     let lowestDistance = 999;
 
+    // 1. Check local registered accounts
     for (const acc of accountList) {
-      if (acc.patientData?.registeredBiometrics?.faceFeatures && acc.patientData.registeredBiometrics.faceFeatures.length > 0) {
+      const p = acc.patientData;
+      if (
+        p &&
+        p.registeredBiometrics?.faceFeatures &&
+        Array.isArray(p.registeredBiometrics.faceFeatures) &&
+        p.registeredBiometrics.faceFeatures.length === 128
+      ) {
         const result = biometricService.verifyFaceMatch(
           faceFeatures,
-          acc.patientData.registeredBiometrics.faceFeatures,
-          acc.patientData.registeredBiometrics.faceTemplateRef
+          p.registeredBiometrics.faceFeatures,
+          p.registeredBiometrics.faceTemplateRef
         );
 
         if (result.matched && result.euclideanDistance < lowestDistance) {
           lowestDistance = result.euclideanDistance;
           bestMatch = acc;
         }
+      }
+    }
+
+    // 2. Also search all registered patients in Supabase database
+    if (!bestMatch) {
+      try {
+        const allPatients = await supabaseService.getAllPatients();
+        const identification = biometricService.identifyPatientByFace(faceFeatures, allPatients);
+        if (identification.matchedPatient) {
+          const p = identification.matchedPatient;
+          bestMatch = {
+            uid: p.id,
+            email: p.email,
+            displayName: p.name,
+            role: 'patient',
+            photoURL: p.avatarUrl,
+            token: 'fb_jwt_' + Math.random().toString(36).substring(2),
+            patientData: p,
+            isFirebaseAuthenticated: true,
+          };
+        }
+      } catch (err) {
+        console.warn('[AuthService] Supabase face search fallback:', err);
       }
     }
 
@@ -354,7 +419,7 @@ class AuthService {
 
     // Strictly reject unauthorized faces — do not fall back to default patient!
     throw new Error(
-      'Face not recognized. No registered account matches this biometric profile. Please sign in with your email or enroll your face first.'
+      '❌ Access Denied: Face not recognized. No registered patient account matches this biometric profile (Cutoff: d <= 0.40). Please sign in with your email or enroll your face first.'
     );
   }
 

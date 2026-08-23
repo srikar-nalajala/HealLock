@@ -422,31 +422,17 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
               setScanningState('verified');
               confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
             } else {
-              // Also check if current searched patient directly matches
-              const directMatch = biometricService.verifyFaceMatch(
-                liveFeatures,
-                searchedPatient.registeredBiometrics.faceFeatures,
-                searchedPatient.registeredBiometrics.faceTemplateRef
+              setScanFeedbackMessage(
+                identification.matchResult.details || '❌ Access Denied: Unknown face. No registered patient matches this biometric profile.'
               );
-
-              if (directMatch.matched) {
-                if (res.photoUrl) {
-                  setSearchedPatient(prev => ({ ...prev, avatarUrl: res.photoUrl }));
-                }
-                setScanFeedbackMessage(`✓ Identity Verified: ${searchedPatient.name} (${searchedPatient.healthId})`);
-                setScanningState('verified');
-                confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-              } else {
-                setScanFeedbackMessage(identification.matchResult.details || 'No registered patient matches this face.');
-                setScanningState('failed');
-              }
+              setScanningState('failed');
             }
           } catch (e: any) {
             stopCamera();
             setScanFeedbackMessage(e.message || 'Face analysis failed');
             setScanningState('failed');
           }
-        }, 1500);
+        }, 1200);
       } catch (err: any) {
         stopCamera();
         setScanFeedbackMessage(err.message || 'Camera stream initialization failed');
@@ -479,12 +465,6 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
         confetti({ particleCount: 35, spread: 50, origin: { y: 0.6 } });
       }, 800);
     }
-  };
-
-  const handleInstantVerify = () => {
-    setScanFeedbackMessage(`✓ Verified: ${searchedPatient.name} (${searchedPatient.healthId})`);
-    setScanningState('verified');
-    confetti({ particleCount: 30, spread: 50, origin: { y: 0.6 } });
   };
 
   const handleExecuteEmergencyUnlock = async () => {
@@ -1208,19 +1188,10 @@ export const DoctorPortal: React.FC<DoctorPortalProps> = ({
                           <button
                             type="button"
                             onClick={handleStartRealScan}
-                            className="px-6 py-3 bg-[#BA3B3B] hover:bg-[#A32A2A] text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
+                            className="w-full sm:w-auto px-8 py-3 bg-[#BA3B3B] hover:bg-[#A32A2A] text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2"
                           >
                             <Camera className="w-4 h-4" />
-                            <span>Start Real {selectedFactor.toUpperCase()} Scan</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={handleInstantVerify}
-                            className="px-4 py-3 bg-white/10 hover:bg-white/20 text-[#FAF7F2] rounded-xl text-xs font-bold transition-all border border-white/15 cursor-pointer flex items-center gap-1.5"
-                          >
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Instant Verify</span>
+                            <span>Start 128D FaceNet Neural Scan</span>
                           </button>
                         </div>
 

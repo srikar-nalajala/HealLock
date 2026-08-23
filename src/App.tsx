@@ -401,6 +401,9 @@ export function App() {
     await supabaseService.savePatientProfile(updatedPatient);
     await firebasePatientService.savePatientProfile(updatedPatient);
 
+    // Sync authService registered accounts ledger
+    authService.updateUserBiometrics(patient.id, updatedBiometrics);
+
     // Sync auth state if current user is patient
     if (currentUser?.patientData) {
       currentUser.patientData = updatedPatient;

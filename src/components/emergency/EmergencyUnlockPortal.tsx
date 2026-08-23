@@ -105,20 +105,10 @@ export const EmergencyUnlockPortal: React.FC<EmergencyUnlockPortalProps> = ({
               setScanningState('verified');
               confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
             } else {
-              const directMatch = biometricService.verifyFaceMatch(
-                liveFeatures,
-                currentPatient.registeredBiometrics.faceFeatures,
-                currentPatient.registeredBiometrics.faceTemplateRef
+              setMatchDetails(
+                identification.matchResult.details || '❌ Access Denied: Unknown face. No registered patient matches this biometric profile.'
               );
-
-              if (directMatch.matched) {
-                setMatchDetails(`✓ Identity Verified: ${currentPatient.name} (${currentPatient.healthId})`);
-                setScanningState('verified');
-                confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-              } else {
-                setMatchDetails(identification.matchResult.details || 'No registered patient matches this face.');
-                setScanningState('failed');
-              }
+              setScanningState('failed');
             }
           } catch (e: any) {
             stopCamera();
